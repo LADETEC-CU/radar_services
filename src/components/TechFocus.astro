@@ -1,0 +1,58 @@
+---
+// TechFocus.astro
+---
+<section id="tech-focus" class="py-32 relative transition-colors duration-300">
+  <div class="container mx-auto px-margin-mobile max-w-container-max">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-24 items-center">
+      <!-- Image Column -->
+      <div class="relative order-2 lg:order-1">
+        <div class="absolute -inset-4 bg-primary-container/10 blur-3xl rounded-full"></div>
+        <img
+          alt="Radar Analytics Suite UI"
+          class="relative z-10 w-full rounded-lg shadow-2xl border border-primary/20"
+          src="/radar_analytics_ui.png"
+        />
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full border border-primary-container/20 scale-110 pointer-events-none rounded-lg"></div>
+      </div>
+
+      <!-- Text Details Column -->
+      <div class="space-y-8 order-1 lg:order-2">
+        <h2 class="font-headline-md text-headline-md-mobile text-on-background">
+          <span class="lang-en">We speak the language of X-band, C-band, and S-band.</span>
+          <span class="lang-es">Hablamos el idioma de la banda X, banda C y banda S.</span>
+        </h2>
+
+        <div class="space-y-6 text-on-surface-variant">
+          <p>
+            <span class="lang-en">Our engineering depth extends across the entire electromagnetic spectrum utilized for meteorological observation. We provide field-tested solutions for clutter suppression in high-density urban environments and dual-pol calibration that exceeds WMO standards.</span>
+            <span class="lang-es">Nuestra profundidad de ingeniería se extiende a lo largo de todo el espectro electromagnético utilizado para la observación meteorológica. Ofrecemos soluciones probadas en el campo para la supresión de eco parásito en entornos urbanos de alta densidad y calibración de polarización dual que supera los estándares de la OMM.</span>
+          </p>
+
+          <ul class="space-y-4 font-technical-label text-sm">
+            <li class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-primary-container mt-1">check_circle</span>
+              <span>
+                <span class="lang-en">Advanced IQ processing and spectral moment estimation.</span>
+                <span class="lang-es">Procesamiento IQ avanzado y estimación de momentos espectrales.</span>
+              </span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-primary-container mt-1">check_circle</span>
+              <span>
+                <span class="lang-en">Ground clutter filtering for non-stationary target environments.</span>
+                <span class="lang-es">Filtrado de eco parásito terrestre para entornos de objetivos no estacionarios.</span>
+              </span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="material-symbols-outlined text-primary-container mt-1">check_circle</span>
+              <span>
+                <span class="lang-en">Real-time calibration monitoring and diagnostic alerting.</span>
+                <span class="lang-es">Monitoreo de calibración en tiempo real y alertas de diagnóstico.</span>
+              </span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

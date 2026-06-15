@@ -1,0 +1,100 @@
+---
+// Hero.astro
+---
+<section
+  id="hero-section"
+  class="relative min-h-screen flex items-center pt-16 overflow-hidden transition-colors duration-300"
+>
+  <!-- Background scanline animation -->
+  <div class="scan-line pointer-events-none"></div>
+
+  <!-- Hero Content -->
+  <div class="container mx-auto px-margin-mobile max-w-container-max z-10">
+    <div class="max-w-3xl space-y-6">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-primary-container animate-pulse"></span>
+        <span class="font-technical-label text-[10px] uppercase tracking-widest text-primary-container">
+          <span class="lang-en">System Status: Active Terminal</span>
+          <span class="lang-es">Estado del Sistema: Terminal Activa</span>
+        </span>
+      </div>
+      
+      <h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-background leading-tight">
+        <span class="lang-en">
+          Next-Gen Weather Radar Engineering. <br />
+          <span class="text-primary-container">Decades of Proven Expertise.</span>
+        </span>
+        <span class="lang-es">
+          Ingeniería de Radares Meteorológicos. <br />
+          <span class="text-primary-container">Décadas de Experiencia Comprobada.</span>
+        </span>
+      </h1>
+      
+      <p class="text-body-lg text-on-surface-variant max-w-xl">
+        <span class="lang-en">From advanced digital signal processing to turnkey radar system integration—we engineer the high-precision technology that maps the atmosphere.</span>
+        <span class="lang-es">Desde el procesamiento avanzado de señales digitales hasta la integración de sistemas de radar llave en mano: diseñamos la tecnología de alta precisión que mapea la atmósfera.</span>
+      </p>
+      
+      <div class="flex flex-col sm:flex-row gap-4 pt-4">
+        <a
+          href="#tech-focus"
+          class="inline-block text-center bg-primary-container text-background font-technical-label px-8 py-4 glow-button uppercase tracking-wider font-bold transition-all duration-300"
+        >
+          <span class="lang-en">Explore Our Technology</span>
+          <span class="lang-es">Explorar Nuestra Tecnología</span>
+        </a>
+        <a
+          href="#contact"
+          class="inline-block text-center border border-primary-container text-primary-container font-technical-label px-8 py-4 hover:bg-primary-container/10 transition-all uppercase tracking-wider"
+        >
+          <span class="lang-en">Consult an Expert</span>
+          <span class="lang-es">Consultar a un Experto</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dynamic Coordinates Tracker Widget -->
+  <div class="absolute bottom-12 right-margin-mobile hidden lg:block border-l border-primary-container/20 pl-6 py-2 z-10">
+    <div class="font-technical-label text-[10px] text-outline uppercase tracking-tighter mb-1">
+      <span class="lang-en">Current Coordinates</span>
+      <span class="lang-es">Coordenadas Actuales</span>
+    </div>
+    <div id="coords-display" class="font-technical-label text-sm text-primary-container font-mono">
+      40.7128° N, 74.0060° W
+    </div>
+  </div>
+</section>
+
+<script>
+  const hero = document.getElementById('hero-section');
+  const coordsDisplay = document.getElementById('coords-display');
+
+  if (hero && coordsDisplay) {
+    hero.addEventListener('mousemove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+
+      const width = rect.width;
+      const height = rect.height;
+
+      // Virtual lat/long calculations mapped to coordinates
+      const lat = (4.7128 + (1 - y / height) * 36).toFixed(4);
+      const lng = (-74.0060 - (x / width) * 40).toFixed(4);
+
+      const latNum = parseFloat(lat);
+      const lngNum = parseFloat(lng);
+
+      const latDir = latNum >= 0 ? 'N' : 'S';
+      const lngDir = lngNum >= 0 ? 'E' : 'W';
+
+      coordsDisplay.textContent = `${Math.abs(latNum).toFixed(4)}° ${latDir}, ${Math.abs(lngNum).toFixed(4)}° ${lngDir}`;
+    });
+
+    // Reset coordinates to default when mouse leaves
+    hero.addEventListener('mouseleave', () => {
+      coordsDisplay.textContent = "40.7128° N, 74.0060° W";
+    });
+  }
+</script>

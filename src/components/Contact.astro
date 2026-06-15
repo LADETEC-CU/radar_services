@@ -1,0 +1,61 @@
+---
+// Contact.astro
+---
+<section id="contact" class="py-32 transition-colors duration-300">
+  <div class="container mx-auto px-margin-mobile max-w-container-max">
+    <div class="glass-panel border-t-2 border-primary-container p-12 md:p-24 flex flex-col md:flex-row gap-16 items-center">
+      <!-- Title Column -->
+      <div class="flex-1 space-y-6 text-center md:text-left">
+        <h2 class="font-display-lg text-display-lg-mobile md:text-headline-md text-on-background leading-tight">
+          <span class="lang-en">Ready to elevate your radar capabilities?</span>
+          <span class="lang-es">¿Listo para elevar sus capacidades de radar?</span>
+        </h2>
+        <p class="text-body-lg text-on-surface-variant">
+          <span class="lang-en">Connect directly with our engineering lead to discuss system specifications, integration requirements, or R&amp;D feasibility studies.</span>
+          <span class="lang-es">Conéctese directamente con nuestro líder de ingeniería para discutir las especificaciones del sistema, los requisitos de integración o los estudios de viabilidad de I+D.</span>
+        </p>
+      </div>
+
+      <!-- Form Column -->
+      <div class="w-full max-w-md">
+        <form class="space-y-6" onsubmit="event.preventDefault(); alert('Technical consultation initiated. | Consulta técnica iniciada.');">
+          <div class="space-y-2">
+            <label class="font-technical-label text-[10px] text-outline uppercase">
+              <span class="lang-en">Service Intent</span>
+              <span class="lang-es">Intención del Servicio</span>
+            </label>
+            <select class="w-full bg-background border border-primary/20 p-4 focus:border-primary-container outline-none font-technical-label text-on-background transition-all duration-300">
+              <option value="acquisition">System Acquisition | Adquisición de Sistemas</option>
+              <option value="consultation">Technical Consultation | Consulta Técnica</option>
+              <option value="licensing">Software Licensing | Licencia de Software</option>
+              <option value="maintenance">Maintenance Protocol | Protocolo de Mantenimiento</option>
+            </select>
+          </div>
+
+          <div class="space-y-2">
+            <label class="font-technical-label text-[10px] text-outline uppercase">
+              <span class="lang-en">Secure Communication Hash (Email)</span>
+              <span class="lang-es">Hash de Comunicación Seguro (Email)</span>
+            </label>
+            <input
+              class="w-full bg-background border border-primary/20 p-4 focus:border-primary-container outline-none font-technical-label text-on-background placeholder:text-outline/40 transition-all duration-300"
+              placeholder="terminal@agency.gov"
+              type="email"
+              required
+            />
+          </div>
+
+          <button class="w-full bg-primary-container text-background font-technical-label py-5 glow-button uppercase tracking-widest font-bold transition-all duration-300">
+            <span class="lang-en">Initiate Technical Consultation</span>
+            <span class="lang-es">Iniciar Consulta Técnica</span>
+          </button>
+
+          <p class="text-[10px] font-technical-label text-outline text-center opacity-60">
+            <span class="lang-en">All inquiries are processed via secure engineering channels.</span>
+            <span class="lang-es">Todas las consultas se procesan a través de canales de ingeniería seguros.</span>
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
