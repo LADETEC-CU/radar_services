@@ -6,14 +6,26 @@ interface Props {
   description?: string;
 }
 
+const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+
+const defaultTitles = {
+  en: "LADETEC | Atmospheric Precision Engineering",
+  es: "LADETEC | Ingeniería de Precisión Atmosférica"
+};
+
+const defaultDescriptions = {
+  en: "Next-Gen Weather Radar Engineering. Decades of Proven Expertise in atmospheric and environmental monitoring radar systems.",
+  es: "Ingeniería de radares meteorológicos soberana. Décadas de experiencia comprobada en sistemas de monitoreo de radares atmosféricos y ambientales."
+};
+
 const { 
-  title = "LADETEC | Atmospheric Precision Engineering",
-  description = "Next-Gen Weather Radar Engineering. Decades of Proven Expertise in atmospheric and environmental monitoring radar systems."
+  title = defaultTitles[lang],
+  description = defaultDescriptions[lang]
 } = Astro.props;
 ---
 
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang={lang} class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -36,7 +48,7 @@ const {
       rel="stylesheet"
     />
 
-    <!-- Theme & Language Flash Prevention -->
+    <!-- Theme Flash Prevention -->
     <script is:inline>
       (function() {
         const theme = localStorage.getItem('theme') || 'dark';
@@ -44,13 +56,6 @@ const {
           document.documentElement.classList.add('dark');
         } else {
           document.documentElement.classList.remove('dark');
-        }
-
-        const lang = localStorage.getItem('lang') || 'en';
-        if (lang === 'es') {
-          document.documentElement.classList.add('lang-es');
-        } else {
-          document.documentElement.classList.remove('lang-es');
         }
       })();
     </script>

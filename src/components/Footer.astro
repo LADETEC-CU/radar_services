@@ -1,8 +1,9 @@
 ---
 // Footer.astro
+const locale = Astro.currentLocale || 'en';
 ---
-<footer class="bg-surface-container-lowest relative bottom-0 border-t border-outline-variant/30 py-12 px-margin-mobile transition-colors duration-300">
-  <div class="container mx-auto max-w-container-max flex flex-col items-center gap-12 text-center">
+<footer class="border-t border-primary/5 py-16 bg-surface-container-lowest transition-colors duration-300">
+  <div class="container mx-auto px-margin-mobile max-w-container-max flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
     <div class="flex items-center gap-2">
       <img
         alt="LADETEC"
@@ -15,32 +16,26 @@
     </div>
 
     <nav class="flex flex-wrap justify-center gap-x-12 gap-y-4">
-      <a class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors" href="#hardware">
-        <span class="lang-en">Hardware Systems</span>
-        <span class="lang-es">Sistemas de Hardware</span>
+      <a href="#hardware" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors">
+        {locale === 'es' ? 'Sistemas de Hardware' : 'Hardware Systems'}
       </a>
-      <a class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors" href="#software">
-        <span class="lang-en">Software API</span>
-        <span class="lang-es">API de Software</span>
+      <a href="#software" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors">
+        {locale === 'es' ? 'API de Software' : 'Software API'}
       </a>
-      <a class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors" href="#contact">
-        <span class="lang-en">Privacy Protocol</span>
-        <span class="lang-es">Protocolo de Privacidad</span>
+      <a href="#contact" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors">
+        {locale === 'es' ? 'Protocolo de Privacidad' : 'Privacy Protocol'}
       </a>
-      <a class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors" href="#contact">
-        <span class="lang-en">Terminal Login</span>
-        <span class="lang-es">Inicio de Sesión de Terminal</span>
+      <a href="#contact" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors">
+        {locale === 'es' ? 'Inicio de Sesión de Terminal' : 'Terminal Login'}
       </a>
     </nav>
 
     <div class="space-y-2 opacity-80">
       <p class="font-technical-label text-[10px] text-outline uppercase tracking-widest">
-        <span class="lang-en">© 2024 LADETEC WEATHER SYSTEMS. ALL RIGHTS RESERVED.</span>
-        <span class="lang-es">© 2024 SISTEMAS METEOROLÓGICOS LADETEC. TODOS LOS DERECHOS RESERVADOS.</span>
+        {locale === 'es' ? '© 2024 SISTEMAS METEOROLÓGICOS LADETEC. TODOS LOS DERECHOS RESERVADOS.' : '© 2024 LADETEC WEATHER SYSTEMS. ALL RIGHTS RESERVED.'}
       </p>
       <p class="font-technical-label text-[10px] text-primary-container/40">
-        <span class="lang-en">PRECISION SPECIFICATION V4.2 | ENCRYPTION ACTIVE</span>
-        <span class="lang-es">ESPECIFICACIÓN DE PRECISIÓN V4.2 | ENCRIPTACIÓN ACTIVA</span>
+        {locale === 'es' ? 'ESPECIFICACIÓN DE PRECISIÓN V4.2 | ENCRIPTACIÓN ACTIVA' : 'PRECISION SPECIFICATION V4.2 | ENCRYPTION ACTIVE'}
       </p>
     </div>
   </div>

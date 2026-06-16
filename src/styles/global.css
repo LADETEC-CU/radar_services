@@ -198,11 +198,3 @@
     border-bottom: 2px solid var(--color-primary-container);
     color: var(--color-primary-container);
 }
-
-/* i18n Translation Visibility Classes */
-html:not(.lang-es) .lang-es {
-    display: none !important;
-}
-html.lang-es .lang-en {
-    display: none !important;
-}

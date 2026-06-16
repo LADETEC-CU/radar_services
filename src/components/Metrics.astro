@@ -1,12 +1,12 @@
 ---
 // Metrics.astro
+const locale = Astro.currentLocale || 'en';
 ---
 <section class="py-32 bg-surface-container-lowest/50 transition-colors duration-300">
   <div class="container mx-auto px-margin-mobile max-w-container-max text-center">
     <div class="inline-block border-b border-primary-container/20 pb-4 mb-16">
       <h2 class="font-technical-label text-sm uppercase tracking-widest text-outline">
-        <span class="lang-en">Institutional Performance Metrics</span>
-        <span class="lang-es">Métricas de Rendimiento Institucional</span>
+        {locale === 'es' ? 'Métricas de Rendimiento Institucional' : 'Institutional Performance Metrics'}
       </h2>
     </div>
 
@@ -14,30 +14,26 @@
       <div class="space-y-2">
         <div class="font-display-lg text-primary-container text-6xl md:text-8xl font-bold">40+</div>
         <div class="font-technical-label text-outline uppercase">
-          <span class="lang-en">Years of Radar Innovation</span>
-          <span class="lang-es">Años de Innovación en Radares</span>
+          {locale === 'es' ? 'Años de Innovación en Radares' : 'Years of Radar Innovation'}
         </div>
       </div>
       <div class="space-y-2">
         <div class="font-display-lg text-primary-container text-6xl md:text-8xl font-bold">150+</div>
         <div class="font-technical-label text-outline uppercase">
-          <span class="lang-en">Global Deployments</span>
-          <span class="lang-es">Despliegues Globales</span>
+          {locale === 'es' ? 'Despliegues Globales' : 'Global Deployments'}
         </div>
       </div>
       <div class="space-y-2">
         <div class="font-display-lg text-primary-container text-6xl md:text-8xl font-bold">100%</div>
         <div class="font-technical-label text-outline uppercase">
-          <span class="lang-en">Custom-Engineered</span>
-          <span class="lang-es">Diseñados a Medida</span>
+          {locale === 'es' ? 'Diseñados a Medida' : 'Custom-Engineered'}
         </div>
       </div>
     </div>
 
     <div class="border-y border-primary/5 py-12">
       <p class="font-technical-label text-xs text-outline mb-10 uppercase tracking-widest">
-        <span class="lang-en">Global Partners &amp; Technical Alliance</span>
-        <span class="lang-es">Socios Globales y Alianza Técnica</span>
+        {locale === 'es' ? 'Socios Globales y Alianza Técnica' : 'Global Partners & Technical Alliance'}
       </p>
       <div class="flex flex-wrap justify-center items-center gap-16 opacity-30 grayscale hover:grayscale-0 transition-all duration-500">
         <span class="font-headline-md font-bold text-on-background tracking-tighter">NOAA.</span>

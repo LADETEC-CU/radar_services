@@ -1,5 +1,6 @@
 ---
 // Contact.astro
+const locale = Astro.currentLocale || 'en';
 ---
 <section id="contact" class="py-32 transition-colors duration-300">
   <div class="container mx-auto px-margin-mobile max-w-container-max">
@@ -7,35 +8,33 @@
       <!-- Title Column -->
       <div class="flex-1 space-y-6 text-center md:text-left">
         <h2 class="font-display-lg text-display-lg-mobile md:text-headline-md text-on-background leading-tight">
-          <span class="lang-en">Ready to elevate your radar capabilities?</span>
-          <span class="lang-es">¿Listo para elevar sus capacidades de radar?</span>
+          {locale === 'es' ? '¿Listo para elevar sus capacidades de radar?' : 'Ready to elevate your radar capabilities?'}
         </h2>
         <p class="text-body-lg text-on-surface-variant">
-          <span class="lang-en">Connect directly with our engineering lead to discuss system specifications, integration requirements, or R&amp;D feasibility studies.</span>
-          <span class="lang-es">Conéctese directamente con nuestro líder de ingeniería para discutir las especificaciones del sistema, los requisitos de integración o los estudios de viabilidad de I+D.</span>
+          {locale === 'es' 
+            ? 'Conéctese directamente con nuestro líder de ingeniería para discutir las especificaciones del sistema, los requisitos de integración o los estudios de viabilidad de I+D.' 
+            : 'Connect directly with our engineering lead to discuss system specifications, integration requirements, or R&D feasibility studies.'}
         </p>
       </div>
 
       <!-- Form Column -->
       <div class="w-full max-w-md">
-        <form class="space-y-6" onsubmit="event.preventDefault(); alert('Technical consultation initiated. | Consulta técnica iniciada.');">
+        <form class="space-y-6" onsubmit="event.preventDefault(); alert(this.getAttribute('data-alert'));" data-alert={locale === 'es' ? 'Consulta técnica iniciada.' : 'Technical consultation initiated.'}>
           <div class="space-y-2">
             <label class="font-technical-label text-[10px] text-outline uppercase">
-              <span class="lang-en">Service Intent</span>
-              <span class="lang-es">Intención del Servicio</span>
+              {locale === 'es' ? 'Intención del Servicio' : 'Service Intent'}
             </label>
             <select class="w-full bg-background border border-primary/20 p-4 focus:border-primary-container outline-none font-technical-label text-on-background transition-all duration-300">
-              <option value="acquisition">System Acquisition | Adquisición de Sistemas</option>
-              <option value="consultation">Technical Consultation | Consulta Técnica</option>
-              <option value="licensing">Software Licensing | Licencia de Software</option>
-              <option value="maintenance">Maintenance Protocol | Protocolo de Mantenimiento</option>
+              <option value="acquisition">{locale === 'es' ? 'Adquisición de Sistemas' : 'System Acquisition'}</option>
+              <option value="consultation">{locale === 'es' ? 'Consulta Técnica' : 'Technical Consultation'}</option>
+              <option value="licensing">{locale === 'es' ? 'Licencia de Software' : 'Software Licensing'}</option>
+              <option value="maintenance">{locale === 'es' ? 'Protocolo de Mantenimiento' : 'Maintenance Protocol'}</option>
             </select>
           </div>
 
           <div class="space-y-2">
             <label class="font-technical-label text-[10px] text-outline uppercase">
-              <span class="lang-en">Secure Communication Hash (Email)</span>
-              <span class="lang-es">Hash de Comunicación Seguro (Email)</span>
+              {locale === 'es' ? 'Hash de Comunicación Seguro (Email)' : 'Secure Communication Hash (Email)'}
             </label>
             <input
               class="w-full bg-background border border-primary/20 p-4 focus:border-primary-container outline-none font-technical-label text-on-background placeholder:text-outline/40 transition-all duration-300"
@@ -46,13 +45,11 @@
           </div>
 
           <button class="w-full bg-primary-container text-background font-technical-label py-5 glow-button uppercase tracking-widest font-bold transition-all duration-300">
-            <span class="lang-en">Initiate Technical Consultation</span>
-            <span class="lang-es">Iniciar Consulta Técnica</span>
+            {locale === 'es' ? 'Iniciar Consulta Técnica' : 'Initiate Technical Consultation'}
           </button>
 
           <p class="text-[10px] font-technical-label text-outline text-center opacity-60">
-            <span class="lang-en">All inquiries are processed via secure engineering channels.</span>
-            <span class="lang-es">Todas las consultas se procesan a través de canales de ingeniería seguros.</span>
+            {locale === 'es' ? 'Todas las consultas se procesan a través de canales de ingeniería seguros.' : 'All inquiries are processed via secure engineering channels.'}
           </p>
         </form>
       </div>
