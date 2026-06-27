@@ -1,58 +1,137 @@
 ---
 // Footer.astro
 import { resolveLang, useTranslations } from "../i18n/utils";
+import contact from "../data/contact.json";
 
 const lang = resolveLang(Astro.currentLocale);
 const t = useTranslations(lang);
+
+// Contact data (emails / phones / social URLs) lives in src/data/contact.json.
+// Icons live here in code; add a platform to the JSON to show it (YouTube/X
+// kept below, ready to re-enable — just add an entry to contact.json).
+const { emails, phones, socials } = contact;
+
+const socialIcons: Record<string, string> = {
+  LinkedIn:
+    "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
+  Facebook:
+    "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z",
+  GitHub:
+    "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12",
+  YouTube:
+    "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z",
+  X: "M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z",
+};
+
+const navLinks = [
+  { href: "#hardware", label: t("nav.hardware") },
+  { href: "#software", label: t("nav.software") },
+  { href: "#rd", label: t("nav.rd") },
+  { href: "#contact", label: t("nav.contact") },
+];
+
+const headingClass =
+  "font-technical-label text-[10px] font-bold tracking-widest text-on-surface uppercase";
+const linkClass =
+  "flex items-center gap-2 font-technical-label text-technical-label text-outline transition-colors hover:text-primary-container";
 ---
 
 <footer
-  class="border-t border-primary/5 bg-surface-container-lowest py-16 transition-colors duration-300"
+  id="footer"
+  class="border-t border-primary/5 bg-surface-container-lowest py-20 transition-colors duration-300"
 >
-  <div
-    class="container mx-auto flex max-w-container-max flex-col items-center justify-between gap-8 px-margin-mobile text-center md:flex-row md:text-left"
-  >
-    <a href="#hero" aria-label="LADETEC" class="flex items-center gap-2">
-      <img
-        alt="LADETEC"
-        class="h-6 w-auto grayscale transition-all duration-300 dark:grayscale-0"
-        src="/logo.webp"
-      />
-      <span
-        class="font-technical-label text-technical-label tracking-widest text-outline uppercase"
-      >
-        LADETEC SYSTEMS
-      </span>
-    </a>
+  <div class="container mx-auto max-w-container-max px-margin-mobile">
+    <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
+      <!-- Brand -->
+      <div class="space-y-5">
+        <a href="#hero" aria-label="LADETEC" class="flex items-center gap-2">
+          <img alt="LADETEC" class="h-6 w-auto" src="/logo.webp" />
+          <span
+            class="font-technical-label text-technical-label tracking-widest text-outline uppercase"
+          >
+            LADETEC SYSTEMS
+          </span>
+        </a>
+        <p class="max-w-xs text-body-sm text-on-surface-variant">
+          {t("footer.tagline")}
+        </p>
+      </div>
 
-    <nav class="flex flex-wrap justify-center gap-x-12 gap-y-4">
-      <a
-        href="#hardware"
-        class="font-technical-label text-technical-label text-outline transition-colors hover:text-primary-container"
-      >
-        {t("footer.hardware")}
-      </a>
-      <a
-        href="#software"
-        class="font-technical-label text-technical-label text-outline transition-colors hover:text-primary-container"
-      >
-        {t("footer.software")}
-      </a>
-      <a
-        href="#contact"
-        class="font-technical-label text-technical-label text-outline transition-colors hover:text-primary-container"
-      >
-        {t("footer.privacy")}
-      </a>
-      <a
-        href="#contact"
-        class="font-technical-label text-technical-label text-outline transition-colors hover:text-primary-container"
-      >
-        {t("footer.terminal")}
-      </a>
-    </nav>
+      <!-- Navigation -->
+      <nav class="space-y-4">
+        <h3 class={headingClass}>{t("footer.nav.title")}</h3>
+        <ul class="space-y-3">
+          {
+            navLinks.map((l) => (
+              <li>
+                <a href={l.href} class={linkClass}>
+                  {l.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
 
-    <div class="space-y-2 opacity-80">
+      <!-- Social media -->
+      <nav class="space-y-4">
+        <h3 class={headingClass}>{t("footer.connect.title")}</h3>
+        <ul class="space-y-3">
+          {
+            socials.map((s) => (
+              <li>
+                <a
+                  href={s.href}
+                  aria-label={s.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class={linkClass}
+                >
+                  {socialIcons[s.label] && (
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                      <path d={socialIcons[s.label]} />
+                    </svg>
+                  )}
+                  {s.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <!-- Contact -->
+      <div class="space-y-4">
+        <h3 class={headingClass}>{t("footer.contact.title")}</h3>
+        <ul class="space-y-3">
+          {
+            emails.map((email) => (
+              <li>
+                <a href={`mailto:${email}`} class={linkClass}>
+                  <span class="material-symbols-outlined text-base">mail</span>
+                  {email}
+                </a>
+              </li>
+            ))
+          }
+          {
+            phones.map((phone) => (
+              <li>
+                <a href={`tel:${phone.replace(/\s+/g, "")}`} class={linkClass}>
+                  <span class="material-symbols-outlined text-base">call</span>
+                  {phone}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div
+      class="mt-16 flex flex-col gap-2 border-t border-primary/10 pt-8 text-center md:flex-row md:items-center md:justify-between md:text-left"
+    >
       <p class="font-technical-label text-[10px] tracking-widest text-outline uppercase">
         {t("footer.copyright")}
       </p>

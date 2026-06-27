@@ -52,6 +52,11 @@
   "contact.alert": "Technical consultation initiated.",
   "contact.privacy": "All inquiries are processed via secure engineering channels.",
 
+  "footer.tagline": "Sovereign weather-radar engineering — hardware, software and R&D for atmospheric observation.",
+  "footer.nav.title": "Navigation",
+  "footer.resources.title": "Resources",
+  "footer.contact.title": "Contact",
+  "footer.connect.title": "Connect",
   "footer.hardware": "Hardware Systems",
   "footer.software": "Software API",
   "footer.privacy": "Privacy Protocol",

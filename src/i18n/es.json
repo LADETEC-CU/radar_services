@@ -52,6 +52,11 @@
   "contact.alert": "Consulta técnica iniciada.",
   "contact.privacy": "Todas las consultas se procesan a través de canales de ingeniería seguros.",
 
+  "footer.tagline": "Ingeniería soberana de radares meteorológicos — hardware, software e I+D para la observación atmosférica.",
+  "footer.nav.title": "Navegación",
+  "footer.resources.title": "Recursos",
+  "footer.contact.title": "Contacto",
+  "footer.connect.title": "Conéctate",
   "footer.hardware": "Sistemas de Hardware",
   "footer.software": "API de Software",
   "footer.privacy": "Protocolo de Privacidad",
