@@ -1,0 +1,44 @@
+[
+  {
+    "name": "Inés María Chapman Waugh",
+    "position": "Vice Primera Ministra de la República de Cuba",
+    "image": "/assets/img/testimonials/ines.webp",
+    "body": "Trabajadores innovadores que aseguran el funcionamiento de los radares meteorológicos, de la alerta temprana."
+  },
+  {
+    "name": "Elba Rosa Pérez Montoya",
+    "position": "Ministra de Ciencia, Tecnología y Medio Ambiente",
+    "image": "/assets/img/testimonials/elbarosa.webp",
+    "body": "Se avanza en la sostenibilidad de la Red de Radares Meteorológicos del país, llegaremos a tener el radar cubano 100% fruto del talento y profesionalidad de los científicos y trabajadores del Grupo de Radares de Camagüey."
+  },
+  {
+    "name": "José Fidel Santana Nuñez",
+    "position": "Viceministro Primero de Ciencia, Tecnología y Medio Ambiente",
+    "image": "/assets/img/testimonials/josefidel.webp",
+    "body": "Equipo que demuestra que la genialidad y creatividad están en todas partes y que lo de \"Nacional\" no es privativo de las capitales. Algún día haremos justicia a este equipo y nos honraremos todos con el tributo que desde hace tiempo merecen."
+  },
+  {
+    "name": "Armando Rodríguez",
+    "position": "Viceministro de Ciencia, Tecnología y Medio Ambiente",
+    "image": "/assets/img/testimonials/armando.webp",
+    "body": "Una contribución de ciencia, tecnología e innovación cubanas al Medio Ambiente: ¡la automatización y dopplerización de radares cubanos!"
+  },
+  {
+    "name": "Enrique Castellanos Abella",
+    "position": "Director de Geología, Ministerio de Energía y Minas",
+    "image": "/assets/img/testimonials/enrique.webp",
+    "body": "Cuba cuenta con un sistema de radares meteorológicos para investigar y monitorear en tiempo real los ciclones y huracanes. Esta infraestructura la mantienen especialistas cubanos."
+  },
+  {
+    "name": "Yasser Llanes Jorge",
+    "position": "Analista de redes en IP4B Télécom",
+    "image": "/assets/img/testimonials/yasser.webp",
+    "body": "He trabajado en este equipo durante años y su conocimiento, servicio y calidad humana son impecables."
+  },
+  {
+    "name": "Dario Jorge Vázquez Arguija",
+    "position": "Ingeniero de Software en ThoughtWorks",
+    "image": "/assets/img/testimonials/dario.webp",
+    "body": "Trabajar en LADETEC fue una oportunidad extraordinaria para mi carrera profesional, incursioné en automatización industrial y geolocalización. Me impregnaron el pragmatismo y saber enfocar el esfuerzo a resultados concretos."
+  }
+]
