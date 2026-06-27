@@ -148,9 +148,16 @@
 
 /* Custom UI classes and animations */
 .glass-panel {
-  background: rgba(15, 19, 29, 0.2);
+  /* Light theme: frosted white glass with a teal hairline. */
+  background: rgba(255, 255, 255, 0.55);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 143, 151, 0.2);
+}
+
+.dark .glass-panel {
+  /* Dark theme: obsidian glass with a cyan hairline. */
+  background: rgba(15, 19, 29, 0.2);
   border: 1px solid rgba(0, 242, 254, 0.15);
 }
 
@@ -201,4 +208,16 @@
 .active-tab {
   border-bottom: 2px solid var(--color-primary-container);
   color: var(--color-primary-container);
+}
+
+/* Theme toggle icons — moon in light mode, sun in dark mode. Exactly one is
+   shown; `.dark` rules win by specificity, so no Tailwind variant ordering. */
+.theme-icon-sun {
+  display: none;
+}
+.dark .theme-icon-moon {
+  display: none;
+}
+.dark .theme-icon-sun {
+  display: inline;
 }

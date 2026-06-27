@@ -19,11 +19,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   >
     <!-- Logo & Title (anchors the hero / scrolls to top) -->
     <a href="#hero" aria-label="LADETEC" class="flex items-center gap-3">
-      <img
-        alt="LADETEC"
-        class="h-8 w-auto grayscale transition-all duration-300 dark:grayscale-0"
-        src="/logo.webp"
-      />
+      <img alt="LADETEC" class="h-8 w-auto" src="/logo.webp" />
       <span
         class="font-technical-label text-technical-label tracking-widest text-outline uppercase"
       >
@@ -67,7 +63,10 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
         class="flex cursor-pointer items-center justify-center p-2 text-outline transition-colors hover:text-primary-container"
         aria-label="Toggle Theme"
       >
-        <span class="material-symbols-outlined text-xl">dark_mode</span>
+        <!-- Moon in light mode, sun in dark mode. Visibility toggled in global.css
+             (.dark wins by specificity) so exactly one is ever shown. -->
+        <span class="material-symbols-outlined theme-icon-moon text-xl">dark_mode</span>
+        <span class="material-symbols-outlined theme-icon-sun text-xl">light_mode</span>
       </button>
 
       <!-- Language Switcher Link -->
@@ -187,5 +186,9 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     document.querySelectorAll("main [id]").forEach((el) => {
       if (anchorIds.has(el.id)) spy.observe(el);
     });
+    // The footer lives outside <main>; track it too so switching locale from
+    // the footer keeps you on the footer instead of jumping to a section.
+    const footerEl = document.querySelector("footer[id]");
+    if (footerEl) spy.observe(footerEl);
   }
 </script>
