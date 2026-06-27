@@ -38,7 +38,7 @@ function getInitials(name: string) {
   >
   </div>
   <div
-    class="pointer-events-none absolute right-0 bottom-1/4 h-96 w-96 rounded-full bg-secondary/5 blur-[120px]"
+    class="pointer-events-none absolute right-0 bottom-1/4 h-96 w-96 rounded-full bg-primary-container/5 blur-[120px]"
   >
   </div>
 
@@ -60,7 +60,7 @@ function getInitials(name: string) {
     <!-- Swiper Container -->
     <swiper-container
       init="false"
-      class="testimonials-swiper pb-16"
+      class="testimonials-swiper pb-20"
       speed="600"
       rewind="true"
       autoplay-delay="8000"
@@ -74,7 +74,7 @@ function getInitials(name: string) {
             <div class="testimonial-wrap h-full p-1">
               <div class="glass-panel group relative flex h-full flex-col justify-between overflow-hidden rounded-xl bg-surface/5 p-8 shadow-lg transition-all duration-300 hover:border-primary-container/40 dark:bg-surface-container-lowest/10">
                 {/* Decorative Quote Mark */}
-                <span class="pointer-events-none absolute -top-2 right-4 font-serif text-8xl text-primary-container/10 transition-colors duration-300 select-none group-hover:text-primary-container/20">
+                <span class="pointer-events-none absolute -top-2 right-4 pt-[0.1em] font-serif text-8xl text-primary-container/10 transition-colors duration-300 select-none group-hover:text-primary-container/20">
                   ”
                 </span>
 
@@ -91,7 +91,7 @@ function getInitials(name: string) {
                 {/* Author Metadata */}
                 <div class="flex items-center gap-4 border-t border-primary/10 pt-6">
                   {/* Avatar with Initials Fallback */}
-                  <div class="relative flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container/30 bg-gradient-to-br from-primary-container/15 to-secondary/15 shadow-md">
+                  <div class="relative flex h-14 w-14 flex-shrink-0 items-center justify-center overflow-hidden rounded-full border-2 border-primary-container/30 bg-gradient-to-br from-primary-container/20 to-primary-container/5 shadow-md">
                     <img
                       src={item.image}
                       alt={item.name}
@@ -133,6 +133,11 @@ function getInitials(name: string) {
     --swiper-pagination-bullet-inactive-opacity: 0.3;
     --swiper-pagination-bullet-size: 8px;
     --swiper-theme-color: var(--color-primary-container);
+  }
+
+  /* Give the pagination dots breathing room below the cards. */
+  .testimonials-swiper::part(container) {
+    padding-bottom: 2.5rem;
   }
 
   /* Make sure slides take equal height in the grid */
