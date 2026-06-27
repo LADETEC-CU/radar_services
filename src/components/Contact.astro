@@ -26,6 +26,19 @@ const t = useTranslations(lang);
       <!-- Form Column -->
       <div class="w-full max-w-md">
         <form id="contact-form" class="space-y-6" data-alert={t("contact.alert")}>
+          <!-- Honeypot: off-screen and hidden from assistive tech; humans never
+               fill it, so any submission with a value is dropped as spam. -->
+          <div class="absolute left-[-9999px]" aria-hidden="true">
+            <label for="contact-company">Company</label>
+            <input
+              id="contact-company"
+              type="text"
+              name="company"
+              tabindex="-1"
+              autocomplete="off"
+            />
+          </div>
+
           <div class="space-y-2">
             <label class="font-technical-label text-[10px] text-outline uppercase">
               {t("contact.intent.label")}
@@ -69,9 +82,11 @@ const t = useTranslations(lang);
 
 <script>
   const form = document.getElementById("contact-form");
-  // TODO
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
+    // Honeypot check: a real user never sees or fills #contact-company.
+    const honeypot = form.querySelector('input[name="company"]') as HTMLInputElement | null;
+    if (honeypot?.value) return; // silently drop likely-bot submissions
     alert(form.getAttribute("data-alert"));
   });
 </script>
