@@ -1,34 +1,61 @@
 ---
 // Header.astro
-const locale = Astro.currentLocale || 'en';
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { resolveLang, useTranslations, otherLang, getRouteFromPathname } from "../i18n/utils";
+import { localeCode } from "../i18n/ui";
+
+const lang = resolveLang(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const target = otherLang(lang);
+const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.pathname, lang));
 ---
-<header class="fixed top-0 w-full z-50 bg-background/80 backdrop-blur-xl border-b border-primary/10 shadow-[0px_0px_20px_rgba(0,242,254,0.1)] transition-colors duration-300">
-  <div class="flex justify-between items-center px-margin-mobile h-16 w-full max-w-container-max mx-auto">
-    <!-- Logo & Title -->
-    <div class="flex items-center gap-3">
+
+<header
+  class="fixed top-0 z-50 w-full border-b border-primary/10 bg-background/80 shadow-[0px_0px_20px_rgba(0,242,254,0.1)] backdrop-blur-xl transition-colors duration-300"
+>
+  <div
+    class="mx-auto flex h-16 w-full max-w-container-max items-center justify-between px-margin-mobile"
+  >
+    <!-- Logo & Title (anchors the hero / scrolls to top) -->
+    <a href="#hero" aria-label="LADETEC" class="flex items-center gap-3">
       <img
         alt="LADETEC"
-        class="h-8 w-auto dark:grayscale-0 grayscale transition-all duration-300"
-        src="data:image/png;base64,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 holidays, etc.)"
+        class="h-8 w-auto grayscale transition-all duration-300 dark:grayscale-0"
+        src="/logo.webp"
       />
-      <span class="font-technical-label text-technical-label text-outline uppercase tracking-widest">
+      <span
+        class="font-technical-label text-technical-label tracking-widest text-outline uppercase"
+      >
         LADETEC SYSTEMS
       </span>
-    </div>
+    </a>
 
     <!-- Desktop Navigation -->
-    <nav class="hidden md:flex items-center gap-8">
-      <a href="#hardware" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors uppercase">
-        {locale === 'es' ? 'Hardware' : 'Hardware'}
+    <nav class="hidden items-center gap-8 md:flex">
+      <a
+        href="#hardware"
+        class="font-technical-label text-technical-label text-outline uppercase transition-colors hover:text-primary-container"
+      >
+        {t("nav.hardware")}
       </a>
-      <a href="#software" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors uppercase">
-        {locale === 'es' ? 'Software' : 'Software'}
+      <a
+        href="#software"
+        class="font-technical-label text-technical-label text-outline uppercase transition-colors hover:text-primary-container"
+      >
+        {t("nav.software")}
       </a>
-      <a href="#rd" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors uppercase">
-        {locale === 'es' ? 'I+D' : 'R&D'}
+      <a
+        href="#rd"
+        class="font-technical-label text-technical-label text-outline uppercase transition-colors hover:text-primary-container"
+      >
+        {t("nav.rd")}
       </a>
-      <a href="#contact" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors uppercase">
-        {locale === 'es' ? 'Consulta' : 'Consultation'}
+      <a
+        href="#contact"
+        class="font-technical-label text-technical-label text-outline uppercase transition-colors hover:text-primary-container"
+      >
+        {t("nav.contact")}
       </a>
     </nav>
 
@@ -37,25 +64,27 @@ const locale = Astro.currentLocale || 'en';
       <!-- Theme Toggle -->
       <button
         id="theme-toggle"
-        class="p-2 text-outline hover:text-primary-container transition-colors flex items-center justify-center cursor-pointer"
+        class="flex cursor-pointer items-center justify-center p-2 text-outline transition-colors hover:text-primary-container"
         aria-label="Toggle Theme"
       >
         <span class="material-symbols-outlined text-xl">dark_mode</span>
       </button>
-      
+
       <!-- Language Switcher Link -->
       <a
         id="lang-toggle"
-        href={locale === 'es' ? '/' : '/es/'}
-        class="font-technical-label text-technical-label text-outline hover:text-primary-container border border-outline/25 px-3 py-1 transition-colors uppercase font-bold"
+        href={switchHref}
+        hreflang={target}
+        aria-label={t("nav.switchLabel")}
+        class="border border-outline/25 px-3 py-1 font-technical-label text-technical-label font-bold text-outline uppercase transition-colors hover:text-primary-container"
       >
-        {locale === 'es' ? 'EN' : 'ES'}
+        {localeCode[target]}
       </a>
-      
+
       <!-- Mobile Menu Toggle -->
       <button
         id="menu-toggle"
-        class="md:hidden p-2 text-outline hover:text-primary-container transition-colors flex items-center justify-center cursor-pointer"
+        class="flex cursor-pointer items-center justify-center p-2 text-outline transition-colors hover:text-primary-container md:hidden"
         aria-label="Toggle Menu"
       >
         <span class="material-symbols-outlined text-xl">menu</span>
@@ -64,44 +93,99 @@ const locale = Astro.currentLocale || 'en';
   </div>
 
   <!-- Mobile Drawer -->
-  <div id="mobile-drawer" class="hidden md:hidden border-t border-primary/10 bg-background/95 backdrop-blur-xl px-margin-mobile py-6 flex flex-col gap-4">
-    <a href="#hardware" class="font-technical-label text-technical-label text-on-surface-variant hover:text-on-surface py-2 border-b border-primary/5">
-      {locale === 'es' ? 'HARDWARE' : 'HARDWARE'}
+  <div
+    id="mobile-drawer"
+    class="flex hidden flex-col gap-4 border-t border-primary/10 bg-background/95 px-margin-mobile py-6 backdrop-blur-xl md:hidden"
+  >
+    <a
+      href="#hardware"
+      class="border-b border-primary/5 py-2 font-technical-label text-technical-label text-on-surface-variant uppercase hover:text-on-surface"
+    >
+      {t("nav.hardware")}
     </a>
-    <a href="#software" class="font-technical-label text-technical-label text-on-surface-variant hover:text-on-surface py-2 border-b border-primary/5">
-      {locale === 'es' ? 'SOFTWARE' : 'SOFTWARE'}
+    <a
+      href="#software"
+      class="border-b border-primary/5 py-2 font-technical-label text-technical-label text-on-surface-variant uppercase hover:text-on-surface"
+    >
+      {t("nav.software")}
     </a>
-    <a href="#rd" class="font-technical-label text-technical-label text-on-surface-variant hover:text-on-surface py-2 border-b border-primary/5">
-      {locale === 'es' ? 'I+D' : 'R&D'}
+    <a
+      href="#rd"
+      class="border-b border-primary/5 py-2 font-technical-label text-technical-label text-on-surface-variant uppercase hover:text-on-surface"
+    >
+      {t("nav.rd")}
     </a>
-    <a href="#contact" class="font-technical-label text-technical-label text-on-surface-variant hover:text-on-surface py-2">
-      {locale === 'es' ? 'CONSULTA' : 'CONSULTATION'}
+    <a
+      href="#contact"
+      class="py-2 font-technical-label text-technical-label text-on-surface-variant uppercase hover:text-on-surface"
+    >
+      {t("nav.contact")}
     </a>
   </div>
 </header>
 
 <script>
   // Theme Toggler Logic
-  const themeToggle = document.getElementById('theme-toggle');
+  const themeToggle = document.getElementById("theme-toggle");
   if (themeToggle) {
-    themeToggle.addEventListener('click', () => {
-      const isDark = document.documentElement.classList.contains('dark');
+    themeToggle.addEventListener("click", () => {
+      const isDark = document.documentElement.classList.contains("dark");
       if (isDark) {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
       } else {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
       }
     });
   }
 
   // Mobile Menu Drawer Logic
-  const menuToggle = document.getElementById('menu-toggle');
-  const mobileDrawer = document.getElementById('mobile-drawer');
+  const menuToggle = document.getElementById("menu-toggle");
+  const mobileDrawer = document.getElementById("mobile-drawer");
   if (menuToggle && mobileDrawer) {
-    menuToggle.addEventListener('click', () => {
-      mobileDrawer.classList.toggle('hidden');
+    menuToggle.addEventListener("click", () => {
+      mobileDrawer.classList.toggle("hidden");
+    });
+  }
+
+  // Language Switch — keep the switcher pointed at the section currently in view,
+  // so changing locale lands you in the same place instead of scrolling to the top.
+  // switchHref is built server-side (no URL fragment available there); a scroll-spy
+  // appends the active section's #id in the browser. Tracking is driven by whatever
+  // the in-page nav links to, so the same anchors exist on both locale routes.
+  const langToggle = document.getElementById("lang-toggle");
+  if (langToggle) {
+    const baseHref = langToggle.getAttribute("href") ?? "";
+    const anchorIds = new Set(
+      [...document.querySelectorAll('a[href^="#"]')].map((a) =>
+        (a.getAttribute("href") ?? "").slice(1)
+      )
+    );
+    const visible = new Map(); // id -> intersection ratio
+    const apply = () => {
+      let activeId = "";
+      let best = 0;
+      for (const [id, ratio] of visible) {
+        if (ratio > best) {
+          best = ratio;
+          activeId = id;
+        }
+      }
+      langToggle.setAttribute("href", baseHref + (activeId ? "#" + activeId : ""));
+    };
+    const spy = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) visible.set(e.target.id, e.intersectionRatio);
+          else visible.delete(e.target.id);
+        }
+        apply();
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    document.querySelectorAll("main [id]").forEach((el) => {
+      if (anchorIds.has(el.id)) spy.observe(el);
     });
   }
 </script>
