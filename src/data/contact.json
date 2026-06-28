@@ -1,0 +1,9 @@
+{
+  "emails": ["info@ladetec.com", "support@ladetec.com"],
+  "phones": ["+53 7 000 0000"],
+  "socials": [
+    { "label": "LinkedIn", "href": "https://www.linkedin.com/company/ladetec" },
+    { "label": "Facebook", "href": "https://www.facebook.com/ladetec" },
+    { "label": "GitHub", "href": "https://github.com/LADETEC-CU" }
+  ]
+}

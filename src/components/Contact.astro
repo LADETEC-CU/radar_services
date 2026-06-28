@@ -1,58 +1,92 @@
 ---
 // Contact.astro
-const locale = Astro.currentLocale || 'en';
+import { resolveLang, useTranslations } from "../i18n/utils";
+
+const lang = resolveLang(Astro.currentLocale);
+const t = useTranslations(lang);
 ---
+
 <section id="contact" class="py-32 transition-colors duration-300">
-  <div class="container mx-auto px-margin-mobile max-w-container-max">
-    <div class="glass-panel border-t-2 border-primary-container p-12 md:p-24 flex flex-col md:flex-row gap-16 items-center">
+  <div class="container mx-auto max-w-container-max px-margin-mobile">
+    <div
+      class="glass-panel flex flex-col items-center gap-16 border-t-2 border-primary-container p-12 md:flex-row md:p-24"
+    >
       <!-- Title Column -->
       <div class="flex-1 space-y-6 text-center md:text-left">
-        <h2 class="font-display-lg text-display-lg-mobile md:text-headline-md text-on-background leading-tight">
-          {locale === 'es' ? '¿Listo para elevar sus capacidades de radar?' : 'Ready to elevate your radar capabilities?'}
+        <h2
+          class="font-display-lg text-display-lg-mobile leading-tight text-on-background md:text-headline-md"
+        >
+          {t("contact.title")}
         </h2>
         <p class="text-body-lg text-on-surface-variant">
-          {locale === 'es' 
-            ? 'Conéctese directamente con nuestro líder de ingeniería para discutir las especificaciones del sistema, los requisitos de integración o los estudios de viabilidad de I+D.' 
-            : 'Connect directly with our engineering lead to discuss system specifications, integration requirements, or R&D feasibility studies.'}
+          {t("contact.body")}
         </p>
       </div>
 
       <!-- Form Column -->
       <div class="w-full max-w-md">
-        <form class="space-y-6" onsubmit="event.preventDefault(); alert(this.getAttribute('data-alert'));" data-alert={locale === 'es' ? 'Consulta técnica iniciada.' : 'Technical consultation initiated.'}>
+        <form id="contact-form" class="space-y-6" data-alert={t("contact.alert")}>
+          <!-- Honeypot: off-screen and hidden from assistive tech; humans never
+               fill it, so any submission with a value is dropped as spam. -->
+          <div class="absolute left-[-9999px]" aria-hidden="true">
+            <label for="contact-company">Company</label>
+            <input
+              id="contact-company"
+              type="text"
+              name="company"
+              tabindex="-1"
+              autocomplete="off"
+            />
+          </div>
+
           <div class="space-y-2">
             <label class="font-technical-label text-[10px] text-outline uppercase">
-              {locale === 'es' ? 'Intención del Servicio' : 'Service Intent'}
+              {t("contact.intent.label")}
             </label>
-            <select class="w-full bg-background border border-primary/20 p-4 focus:border-primary-container outline-none font-technical-label text-on-background transition-all duration-300">
-              <option value="acquisition">{locale === 'es' ? 'Adquisición de Sistemas' : 'System Acquisition'}</option>
-              <option value="consultation">{locale === 'es' ? 'Consulta Técnica' : 'Technical Consultation'}</option>
-              <option value="licensing">{locale === 'es' ? 'Licencia de Software' : 'Software Licensing'}</option>
-              <option value="maintenance">{locale === 'es' ? 'Protocolo de Mantenimiento' : 'Maintenance Protocol'}</option>
+            <select
+              class="w-full border border-primary/20 bg-background p-4 font-technical-label text-on-background transition-all duration-300 outline-none focus:border-primary-container"
+            >
+              <option value="acquisition">{t("contact.intent.acquisition")}</option>
+              <option value="consultation">{t("contact.intent.consultation")}</option>
+              <option value="licensing">{t("contact.intent.licensing")}</option>
+              <option value="maintenance">{t("contact.intent.maintenance")}</option>
             </select>
           </div>
 
           <div class="space-y-2">
             <label class="font-technical-label text-[10px] text-outline uppercase">
-              {locale === 'es' ? 'Hash de Comunicación Seguro (Email)' : 'Secure Communication Hash (Email)'}
+              {t("contact.email.label")}
             </label>
             <input
-              class="w-full bg-background border border-primary/20 p-4 focus:border-primary-container outline-none font-technical-label text-on-background placeholder:text-outline/40 transition-all duration-300"
+              class="w-full border border-primary/20 bg-background p-4 font-technical-label text-on-background transition-all duration-300 outline-none placeholder:text-outline/40 focus:border-primary-container"
               placeholder="terminal@agency.gov"
               type="email"
               required
             />
           </div>
 
-          <button class="w-full bg-primary-container text-background font-technical-label py-5 glow-button uppercase tracking-widest font-bold transition-all duration-300">
-            {locale === 'es' ? 'Iniciar Consulta Técnica' : 'Initiate Technical Consultation'}
+          <button
+            class="glow-button w-full bg-primary-container py-5 font-technical-label font-bold tracking-widest text-background uppercase transition-all duration-300"
+          >
+            {t("contact.submit")}
           </button>
 
-          <p class="text-[10px] font-technical-label text-outline text-center opacity-60">
-            {locale === 'es' ? 'Todas las consultas se procesan a través de canales de ingeniería seguros.' : 'All inquiries are processed via secure engineering channels.'}
+          <p class="text-center font-technical-label text-[10px] text-outline opacity-60">
+            {t("contact.privacy")}
           </p>
         </form>
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  const form = document.getElementById("contact-form");
+  form?.addEventListener("submit", (event) => {
+    event.preventDefault();
+    // Honeypot check: a real user never sees or fills #contact-company.
+    const honeypot = form.querySelector('input[name="company"]') as HTMLInputElement | null;
+    if (honeypot?.value) return; // silently drop likely-bot submissions
+    alert(form.getAttribute("data-alert"));
+  });
+</script>

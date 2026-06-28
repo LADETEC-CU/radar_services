@@ -1,41 +1,58 @@
 ---
 import "../styles/global.css";
+import { getAbsoluteLocaleUrl } from "astro:i18n";
+import { resolveLang, useTranslations, getRouteFromPathname, localeList } from "../i18n/utils";
+import { defaultLang, ogLocale } from "../i18n/ui";
 
-interface Props {
-  title?: string;
-  description?: string;
-}
+const lang = resolveLang(Astro.currentLocale);
+const t = useTranslations(lang);
 
-const lang = (Astro.currentLocale || 'en') as 'en' | 'es';
+const { title = t("site.title"), description = t("site.description") } = Astro.props;
 
-const defaultTitles = {
-  en: "LADETEC | Atmospheric Precision Engineering",
-  es: "LADETEC | Ingeniería de Precisión Atmosférica"
-};
-
-const defaultDescriptions = {
-  en: "Next-Gen Weather Radar Engineering. Decades of Proven Expertise in atmospheric and environmental monitoring radar systems.",
-  es: "Ingeniería de radares meteorológicos soberana. Décadas de experiencia comprobada en sistemas de monitoreo de radares atmosféricos y ambientales."
-};
-
-const { 
-  title = defaultTitles[lang],
-  description = defaultDescriptions[lang]
-} = Astro.props;
+// Locale-agnostic route (no locale prefix), used to build per-locale URLs.
+const route = getRouteFromPathname(Astro.url.pathname, lang);
+const canonical = getAbsoluteLocaleUrl(lang, route);
+const alternates = localeList.map((l) => ({ lang: l, href: getAbsoluteLocaleUrl(l, route) }));
+const ogImage = new URL("/og.webp", Astro.site).href;
 ---
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang={lang} class="dark">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/logo.webp" sizes="48x48" type="image/webp" />
     <meta name="generator" content={Astro.generator} />
-    
+
     <!-- SEO Meta Tags -->
     <title>{title}</title>
     <meta name="description" content={description} />
-    
+    <link rel="canonical" href={canonical} />
+
+    <!-- i18n alternates: one per locale + x-default -->
+    {alternates.map((alt) => <link rel="alternate" hreflang={alt.lang} href={alt.href} />)}
+    <link rel="alternate" hreflang="x-default" href={getAbsoluteLocaleUrl(defaultLang, route)} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="LADETEC" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    {
+      alternates
+        .filter((alt) => alt.lang !== lang)
+        .map((alt) => <meta property="og:locale:alternate" content={ogLocale[alt.lang]} />)
+    }
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+
     <!-- Fonts and Icons -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -50,20 +67,22 @@ const {
 
     <!-- Theme Flash Prevention -->
     <script is:inline>
-      (function() {
-        const theme = localStorage.getItem('theme') || 'dark';
-        if (theme === 'dark') {
-          document.documentElement.classList.add('dark');
+      (function () {
+        const theme = localStorage.getItem("theme") || "dark";
+        if (theme === "dark") {
+          document.documentElement.classList.add("dark");
         } else {
-          document.documentElement.classList.remove('dark');
+          document.documentElement.classList.remove("dark");
         }
       })();
     </script>
   </head>
-  <body class="bg-background text-on-background font-body-lg overflow-x-hidden selection:bg-primary-container/30 transition-colors duration-300">
+  <body
+    class="overflow-x-hidden bg-background font-body-lg text-on-background transition-colors duration-300 selection:bg-primary-container/30"
+  >
     <!-- Technical Grid Overlay -->
-    <div class="fixed inset-0 technical-grid pointer-events-none z-0"></div>
-    
+    <div class="technical-grid pointer-events-none fixed inset-0 z-0"></div>
+
     <!-- Main Content Slot -->
     <slot />
   </body>

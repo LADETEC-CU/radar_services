@@ -1,46 +1,59 @@
 ---
 // Metrics.astro
-const locale = Astro.currentLocale || 'en';
+import { resolveLang, useTranslations } from "../i18n/utils";
+
+const lang = resolveLang(Astro.currentLocale);
+const t = useTranslations(lang);
 ---
-<section class="py-32 bg-surface-container-lowest/50 transition-colors duration-300">
-  <div class="container mx-auto px-margin-mobile max-w-container-max text-center">
-    <div class="inline-block border-b border-primary-container/20 pb-4 mb-16">
-      <h2 class="font-technical-label text-sm uppercase tracking-widest text-outline">
-        {locale === 'es' ? 'Métricas de Rendimiento Institucional' : 'Institutional Performance Metrics'}
+
+<section class="bg-surface-container-lowest/30 py-32 transition-colors duration-300">
+  <div class="container mx-auto max-w-container-max px-margin-mobile text-center">
+    <div class="mb-20 inline-block border-b border-primary-container/20 pb-2">
+      <h2
+        class="font-technical-label text-sm font-bold tracking-widest text-primary-container uppercase"
+      >
+        {t("metrics.eyebrow")}
       </h2>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-24">
+    <div class="mb-24 grid grid-cols-1 gap-12 md:grid-cols-3">
       <div class="space-y-2">
-        <div class="font-display-lg text-primary-container text-6xl md:text-8xl font-bold">40+</div>
+        <div class="font-display-lg text-6xl font-bold text-primary-container md:text-8xl">40+</div>
         <div class="font-technical-label text-outline uppercase">
-          {locale === 'es' ? 'Años de Innovación en Radares' : 'Years of Radar Innovation'}
+          {t("metrics.years")}
         </div>
       </div>
       <div class="space-y-2">
-        <div class="font-display-lg text-primary-container text-6xl md:text-8xl font-bold">150+</div>
+        <div class="font-display-lg text-6xl font-bold text-primary-container md:text-8xl">
+          150+
+        </div>
         <div class="font-technical-label text-outline uppercase">
-          {locale === 'es' ? 'Despliegues Globales' : 'Global Deployments'}
+          {t("metrics.deployments")}
         </div>
       </div>
       <div class="space-y-2">
-        <div class="font-display-lg text-primary-container text-6xl md:text-8xl font-bold">100%</div>
+        <div class="font-display-lg text-6xl font-bold text-primary-container md:text-8xl">
+          100%
+        </div>
         <div class="font-technical-label text-outline uppercase">
-          {locale === 'es' ? 'Diseñados a Medida' : 'Custom-Engineered'}
+          {t("metrics.custom")}
         </div>
       </div>
     </div>
 
     <div class="border-y border-primary/5 py-12">
-      <p class="font-technical-label text-xs text-outline mb-10 uppercase tracking-widest">
-        {locale === 'es' ? 'Socios Globales y Alianza Técnica' : 'Global Partners & Technical Alliance'}
+      <p class="mb-10 font-technical-label text-xs tracking-widest text-outline uppercase">
+        {t("metrics.partners")}
       </p>
-      <div class="flex flex-wrap justify-center items-center gap-16 opacity-30 grayscale hover:grayscale-0 transition-all duration-500">
-        <span class="font-headline-md font-bold text-on-background tracking-tighter">NOAA.</span>
-        <span class="font-headline-md font-bold text-on-background tracking-tighter">AIRBUS</span>
-        <span class="font-headline-md font-bold text-on-background tracking-tighter">METOFFICE</span>
-        <span class="font-headline-md font-bold text-on-background tracking-tighter">RAYTHEON</span>
-        <span class="font-headline-md font-bold text-on-background tracking-tighter">NASA</span>
+      <div
+        class="flex flex-wrap items-center justify-center gap-16 opacity-30 grayscale transition-all duration-500 hover:grayscale-0"
+      >
+        <span class="font-headline-md font-bold tracking-tighter text-on-background">NOAA.</span>
+        <span class="font-headline-md font-bold tracking-tighter text-on-background">AIRBUS</span>
+        <span class="font-headline-md font-bold tracking-tighter text-on-background">METOFFICE</span
+        >
+        <span class="font-headline-md font-bold tracking-tighter text-on-background">RAYTHEON</span>
+        <span class="font-headline-md font-bold tracking-tighter text-on-background">NASA</span>
       </div>
     </div>
   </div>

@@ -1,41 +1,142 @@
 ---
 // Footer.astro
-const locale = Astro.currentLocale || 'en';
+import { resolveLang, useTranslations } from "../i18n/utils";
+import contact from "../data/contact.json";
+
+const lang = resolveLang(Astro.currentLocale);
+const t = useTranslations(lang);
+
+// Contact data (emails / phones / social URLs) lives in src/data/contact.json.
+// Icons live here in code; add a platform to the JSON to show it (YouTube/X
+// kept below, ready to re-enable — just add an entry to contact.json).
+const { emails, phones, socials } = contact;
+
+const socialIcons: Record<string, string> = {
+  LinkedIn:
+    "M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z",
+  Facebook:
+    "M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z",
+  GitHub:
+    "M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12",
+  YouTube:
+    "M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z",
+  X: "M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z",
+};
+
+const navLinks = [
+  { href: "#hardware", label: t("nav.hardware") },
+  { href: "#software", label: t("nav.software") },
+  { href: "#rd", label: t("nav.rd") },
+  { href: "#contact", label: t("nav.contact") },
+];
+
+const headingClass =
+  "font-technical-label text-[10px] font-bold tracking-widest text-on-surface uppercase";
+const linkClass =
+  "flex items-center gap-2 font-technical-label text-technical-label text-outline transition-colors hover:text-primary-container";
 ---
-<footer class="border-t border-primary/5 py-16 bg-surface-container-lowest transition-colors duration-300">
-  <div class="container mx-auto px-margin-mobile max-w-container-max flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
-    <div class="flex items-center gap-2">
-      <img
-        alt="LADETEC"
-        class="h-6 w-auto grayscale dark:grayscale-0 transition-all duration-300"
-        src="data:image/png;base64,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"
-      />
-      <span class="font-technical-label text-technical-label text-outline uppercase tracking-widest">
-        LADETEC SYSTEMS
-      </span>
+
+<footer
+  id="footer"
+  class="border-t border-primary/5 bg-surface-container-lowest py-20 transition-colors duration-300"
+>
+  <div class="container mx-auto max-w-container-max px-margin-mobile">
+    <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
+      <!-- Brand -->
+      <div class="space-y-5">
+        <a href="#hero" aria-label="LADETEC" class="flex items-center gap-2">
+          <img alt="LADETEC" class="h-6 w-auto" src="/logo.webp" />
+          <span
+            class="font-technical-label text-technical-label tracking-widest text-outline uppercase"
+          >
+            LADETEC SYSTEMS
+          </span>
+        </a>
+        <p class="max-w-xs text-body-sm text-on-surface-variant">
+          {t("footer.tagline")}
+        </p>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="space-y-4">
+        <h3 class={headingClass}>{t("footer.nav.title")}</h3>
+        <ul class="space-y-3">
+          {
+            navLinks.map((l) => (
+              <li>
+                <a href={l.href} class={linkClass}>
+                  {l.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <!-- Social media -->
+      <nav class="space-y-4">
+        <h3 class={headingClass}>{t("footer.connect.title")}</h3>
+        <ul class="space-y-3">
+          {
+            socials.map((s) => (
+              <li>
+                <a
+                  href={s.href}
+                  aria-label={s.label}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class={linkClass}
+                >
+                  {socialIcons[s.label] && (
+                    <svg viewBox="0 0 24 24" fill="currentColor" class="h-4 w-4" aria-hidden="true">
+                      <path d={socialIcons[s.label]} />
+                    </svg>
+                  )}
+                  {s.label}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <!-- Contact -->
+      <div class="space-y-4">
+        <h3 class={headingClass}>{t("footer.contact.title")}</h3>
+        <ul class="space-y-3">
+          {
+            emails.map((email) => (
+              <li>
+                <a href={`mailto:${email}`} class={linkClass}>
+                  <span class="material-symbols-outlined text-base">mail</span>
+                  {email}
+                </a>
+              </li>
+            ))
+          }
+          {
+            phones.map((phone) => (
+              <li>
+                <a href={`tel:${phone.replace(/\s+/g, "")}`} class={linkClass}>
+                  <span class="material-symbols-outlined text-base">call</span>
+                  {phone}
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </div>
     </div>
 
-    <nav class="flex flex-wrap justify-center gap-x-12 gap-y-4">
-      <a href="#hardware" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors">
-        {locale === 'es' ? 'Sistemas de Hardware' : 'Hardware Systems'}
-      </a>
-      <a href="#software" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors">
-        {locale === 'es' ? 'API de Software' : 'Software API'}
-      </a>
-      <a href="#contact" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors">
-        {locale === 'es' ? 'Protocolo de Privacidad' : 'Privacy Protocol'}
-      </a>
-      <a href="#contact" class="font-technical-label text-technical-label text-outline hover:text-primary-container transition-colors">
-        {locale === 'es' ? 'Inicio de Sesión de Terminal' : 'Terminal Login'}
-      </a>
-    </nav>
-
-    <div class="space-y-2 opacity-80">
-      <p class="font-technical-label text-[10px] text-outline uppercase tracking-widest">
-        {locale === 'es' ? '© 2024 SISTEMAS METEOROLÓGICOS LADETEC. TODOS LOS DERECHOS RESERVADOS.' : '© 2024 LADETEC WEATHER SYSTEMS. ALL RIGHTS RESERVED.'}
+    <!-- Bottom bar -->
+    <div
+      class="mt-16 flex flex-col gap-2 border-t border-primary/10 pt-8 text-center md:flex-row md:items-center md:justify-between md:text-left"
+    >
+      <p class="font-technical-label text-[10px] tracking-widest text-outline uppercase">
+        {t("footer.copyright")}
       </p>
       <p class="font-technical-label text-[10px] text-primary-container/40">
-        {locale === 'es' ? 'ESPECIFICACIÓN DE PRECISIÓN V4.2 | ENCRIPTACIÓN ACTIVA' : 'PRECISION SPECIFICATION V4.2 | ENCRYPTION ACTIVE'}
+        {t("footer.spec")}
       </p>
     </div>
   </div>
