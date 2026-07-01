@@ -1,0 +1,645 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Radar meteorológico en vivo</title>
+
+    <!-- Leaflet -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+
+    <!-- Tipografías (opcionales: hay fallback de sistema) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <style>
+      /* =========================================================================
+   MAQUETA — Hero de radar meteorológico
+   Todo lo relevante está bajo .radar-hero para poder incrustarlo tal cual.
+   Requiere Leaflet (CSS + JS, arriba). Los <link> de fuentes son opcionales.
+   Puntos de configuración: ver bloque CONFIG en el <script> al final.
+   Atribución de RainViewer/CARTO/OSM: en el control inferior derecho (obligatoria).
+   ========================================================================= */
+
+      :root {
+        --bg: #070b10;
+        --text: #e7ecf2;
+        --muted: #8a97a6;
+        --line: rgba(255, 255, 255, 0.12);
+        --panel: rgba(9, 13, 19, 0.55);
+        --signal: #35e0c4; /* acento único: "señal" de radar */
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font-family:
+          "Space Grotesk",
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          Segoe UI,
+          Roboto,
+          sans-serif;
+      }
+
+      /* ---- Contenedor hero (esto es lo que se incrusta) ---- */
+      .radar-hero {
+        position: relative;
+        width: 100%;
+        height: 100svh; /* tamaño hero; cámbialo a la altura que necesites */
+        min-height: 560px;
+        overflow: hidden;
+        background: var(--bg);
+        isolation: isolate;
+      }
+      .radar-hero #map {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+      }
+      .leaflet-container {
+        background: var(--bg);
+        font: inherit;
+      }
+      .leaflet-control-attribution {
+        background: rgba(7, 11, 16, 0.66) !important;
+        color: var(--muted) !important;
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 10.5px;
+        backdrop-filter: blur(4px);
+      }
+      .leaflet-control-attribution a {
+        color: #b9c4d1 !important;
+      }
+
+      /* Degradados para legibilidad del texto sobre el mapa */
+      .radar-hero__scrim {
+        position: absolute;
+        inset: 0;
+        z-index: 400;
+        pointer-events: none;
+      }
+      .radar-hero__scrim::before,
+      .radar-hero__scrim::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 34%;
+      }
+      .radar-hero__scrim::before {
+        top: 0;
+        background: linear-gradient(to bottom, rgba(7, 11, 16, 0.78), rgba(7, 11, 16, 0));
+      }
+      .radar-hero__scrim::after {
+        bottom: 0;
+        background: linear-gradient(to top, rgba(7, 11, 16, 0.86), rgba(7, 11, 16, 0));
+      }
+
+      /* ---- HUD (capas de interfaz) ---- */
+      .hud {
+        position: absolute;
+        z-index: 1000;
+        pointer-events: none;
+      }
+      .hud--top {
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 22px clamp(18px, 4vw, 44px);
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 18px;
+      }
+      .hud--bottom {
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 0 clamp(18px, 4vw, 44px) 20px;
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 24px;
+        flex-wrap: wrap;
+      }
+
+      /* Marca / estado en vivo */
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 12px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--text);
+      }
+      .brand__name {
+        color: var(--muted);
+      }
+      .live-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--signal);
+        box-shadow: 0 0 0 0 rgba(53, 224, 196, 0.7);
+        animation: pulse 2s ease-out infinite;
+      }
+      @keyframes pulse {
+        0% {
+          box-shadow: 0 0 0 0 rgba(53, 224, 196, 0.55);
+        }
+        70% {
+          box-shadow: 0 0 0 10px rgba(53, 224, 196, 0);
+        }
+        100% {
+          box-shadow: 0 0 0 0 rgba(53, 224, 196, 0);
+        }
+      }
+
+      .place {
+        font-family: "IBM Plex Mono", ui-monospace, monospace;
+        font-size: 12.5px;
+        color: var(--muted);
+        text-align: right;
+      }
+      .place strong {
+        color: var(--text);
+        font-weight: 500;
+      }
+
+      /* Titular (COPY DE MUESTRA — reemplázalo por el de tu landing) */
+      .pitch {
+        position: absolute;
+        z-index: 1000;
+        pointer-events: none;
+        top: clamp(76px, 14vh, 150px);
+        left: clamp(18px, 4vw, 44px);
+        max-width: min(560px, 80%);
+      }
+      .pitch h1 {
+        margin: 0 0 10px;
+        font-size: clamp(28px, 5vw, 52px);
+        line-height: 1.03;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        text-wrap: balance;
+        text-shadow: 0 2px 30px rgba(0, 0, 0, 0.55);
+      }
+      .pitch p {
+        margin: 0;
+        font-size: clamp(14px, 1.6vw, 17px);
+        line-height: 1.5;
+        color: #c2ccd7;
+        max-width: 44ch;
+      }
+
+      /* Leyenda de intensidad (dBZ, esquema Universal Blue, aproximada) */
+      .legend {
+        pointer-events: none;
+      }
+      .legend__label {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 7px;
+      }
+      .legend__bar {
+        height: 8px;
+        width: min(220px, 42vw);
+        border-radius: 999px;
+        border: 1px solid var(--line);
+        background: linear-gradient(
+          90deg,
+          #0a2a5e 0%,
+          #1f6fd0 22%,
+          #25c39a 46%,
+          #e4d33b 68%,
+          #ec7a2a 84%,
+          #d63b3b 100%
+        );
+      }
+      .legend__scale {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 6px;
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10px;
+        color: var(--muted);
+      }
+
+      /* Línea de tiempo = elemento firma; codifica los frames reales (2 h → ahora) */
+      .timeline {
+        pointer-events: none;
+        min-width: min(360px, 90vw);
+        flex: 1 1 300px;
+        max-width: 520px;
+      }
+      .timeline__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        margin-bottom: 8px;
+      }
+      .timeline__scale {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 10.5px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--muted);
+      }
+      .timeline__readout {
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 13px;
+        color: var(--text);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .live-tag {
+        font-size: 9.5px;
+        letter-spacing: 0.14em;
+        padding: 2px 7px;
+        border-radius: 999px;
+        color: var(--bg);
+        background: var(--signal);
+        font-weight: 600;
+        opacity: 0;
+        transition: opacity 0.2s;
+      }
+      .live-tag.is-on {
+        opacity: 1;
+      }
+      .timeline__track {
+        position: relative;
+        height: 3px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+      }
+      .timeline__fill {
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 0%;
+        border-radius: 999px;
+        background: var(--signal);
+        transition: width 0.28s ease;
+      }
+      .timeline__dot {
+        position: absolute;
+        top: 50%;
+        left: 0%;
+        width: 11px;
+        height: 11px;
+        border-radius: 50%;
+        background: var(--signal);
+        transform: translate(-50%, -50%);
+        transition: left 0.28s ease;
+        box-shadow: 0 0 12px rgba(53, 224, 196, 0.7);
+      }
+
+      /* Marcador de ubicación del usuario */
+      .user-pin {
+        position: relative;
+      }
+      .user-pin__core {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 9px;
+        height: 9px;
+        margin: -4.5px 0 0 -4.5px;
+        border-radius: 50%;
+        background: var(--signal);
+        box-shadow:
+          0 0 0 2px rgba(7, 11, 16, 0.9),
+          0 0 14px rgba(53, 224, 196, 0.9);
+      }
+      .user-pin__ring {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 9px;
+        height: 9px;
+        margin: -4.5px 0 0 -4.5px;
+        border-radius: 50%;
+        border: 1.5px solid var(--signal);
+        animation: ping 2.4s ease-out infinite;
+      }
+      @keyframes ping {
+        0% {
+          transform: scale(1);
+          opacity: 0.8;
+        }
+        100% {
+          transform: scale(4.2);
+          opacity: 0;
+        }
+      }
+
+      /* Aviso de estado (errores / datos ausentes) */
+      .notice {
+        position: absolute;
+        z-index: 1001;
+        left: 50%;
+        bottom: 96px;
+        transform: translateX(-50%);
+        pointer-events: none;
+        padding: 8px 14px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--panel);
+        backdrop-filter: blur(8px);
+        font-family: "IBM Plex Mono", monospace;
+        font-size: 12px;
+        color: var(--muted);
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .notice.is-on {
+        opacity: 1;
+      }
+
+      @media (max-width: 640px) {
+        .place {
+          display: none;
+        }
+        .pitch {
+          max-width: 88%;
+        }
+        .hud--bottom {
+          gap: 16px;
+        }
+        .legend {
+          order: 2;
+        }
+        .timeline {
+          order: 1;
+          flex-basis: 100%;
+        }
+      }
+
+      /* Respeta la preferencia de movimiento reducido */
+      @media (prefers-reduced-motion: reduce) {
+        .live-dot,
+        .user-pin__ring {
+          animation: none;
+        }
+        .timeline__fill,
+        .timeline__dot {
+          transition: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="radar-hero" aria-label="Mapa de radar meteorológico en vivo">
+      <div
+        id="map"
+        role="img"
+        aria-label="Mapa con la precipitación de radar más reciente sobre tu ubicación"
+      ></div>
+      <div class="radar-hero__scrim"></div>
+
+      <!-- HUD superior -->
+      <div class="hud hud--top">
+        <div class="brand">
+          <span class="live-dot"></span> En vivo · <span class="brand__name">Radar</span>
+        </div>
+        <div class="place">Radar sobre <strong id="rvPlace">localizando…</strong></div>
+      </div>
+
+      <!-- Titular: COPY DE MUESTRA, sustitúyelo por el mensaje de tu landing -->
+      <div class="pitch">
+        <h1>Precipitación en vivo, radar en acción.</h1>
+        <p>
+          Datos de radar meteorológico centrados en tu ubicación y actualizados cada 10 minutos.
+        </p>
+      </div>
+
+      <!-- HUD inferior -->
+      <div class="hud hud--bottom">
+        <div class="legend">
+          <div class="legend__label">Intensidad</div>
+          <div class="legend__bar"></div>
+          <div class="legend__scale"><span>ligera</span><span>fuerte</span></div>
+        </div>
+
+        <div class="timeline">
+          <div class="timeline__head">
+            <span class="timeline__scale">hace 2&nbsp;h → ahora</span>
+            <span class="timeline__readout"
+              ><span id="rvClock">--:--</span><span class="live-tag" id="rvLive">ahora</span></span
+            >
+          </div>
+          <div class="timeline__track">
+            <div class="timeline__fill" id="rvFill"></div>
+            <div class="timeline__dot" id="rvDot"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="notice" id="rvNotice"></div>
+    </section>
+
+    <script>
+      /* ======================= CONFIG ======================= */
+      const CFG = {
+        ZOOM: 7, // vista regional: contiene la ubicación + margen amplio
+        RADAR_OPACITY: 0.82, // opacidad de la capa de lluvia
+        FRAME_MS: 480, // duración de cada frame de la animación
+        PAUSE_LAST_MS: 1500, // pausa extra al llegar al frame "ahora"
+        TILE_SIZE: 256, // 256 (ligero) o 512 (más nítido)
+        COLOR: 2, // esquema de color RainViewer (2 = Universal Blue, único vigente)
+        OPTIONS: "1_1", // {smooth}_{snow}: suavizado + nieve en color aparte
+        FALLBACK: { lat: 39.83, lon: -98.58, label: "tu zona" }, // si falla la geolocalización por IP
+      };
+      /* ====================================================== */
+
+      const $ = (id) => document.getElementById(id);
+      const pad = (n) => String(n).padStart(2, "0");
+      const fmtTime = (unix) => {
+        const d = new Date(unix * 1000);
+        return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+      };
+      const prefersReduced = window.matchMedia("(prefers-reduced-motion:reduce)").matches;
+
+      function showNotice(msg) {
+        const n = $("rvNotice");
+        n.textContent = msg;
+        n.classList.add("is-on");
+      }
+
+      /* ---- Mapa base oscuro (CARTO): sin etiquetas debajo, etiquetas encima del radar ---- */
+      const map = L.map("map", {
+        zoomControl: false,
+        attributionControl: true,
+        scrollWheelZoom: false, // no secuestra el scroll de la página
+        center: [CFG.FALLBACK.lat, CFG.FALLBACK.lon],
+        zoom: CFG.ZOOM,
+      });
+      map.attributionControl.setPrefix(false);
+
+      map.createPane("radar");
+      map.getPane("radar").style.zIndex = 350;
+      map.getPane("radar").style.pointerEvents = "none";
+      map.createPane("labels");
+      map.getPane("labels").style.zIndex = 450;
+      map.getPane("labels").style.pointerEvents = "none";
+
+      const attribution =
+        '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · ' +
+        '© <a href="https://carto.com/attributions">CARTO</a> · ' +
+        'Weather data by <a href="https://www.rainviewer.com/">RainViewer</a>';
+
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png", {
+        subdomains: "abcd",
+        maxZoom: 19,
+        detectRetina: true,
+        attribution,
+      }).addTo(map);
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png", {
+        pane: "labels",
+        subdomains: "abcd",
+        maxZoom: 19,
+        detectRetina: true,
+      }).addTo(map);
+
+      /* ---- Ubicación por IP (sin permiso), con cadena de respaldo ---- */
+      async function fetchJSON(url, ms = 4000) {
+        const ctrl = new AbortController();
+        const t = setTimeout(() => ctrl.abort(), ms);
+        try {
+          const r = await fetch(url, { signal: ctrl.signal });
+          if (!r.ok) throw 0;
+          return await r.json();
+        } finally {
+          clearTimeout(t);
+        }
+      }
+
+      async function locate() {
+        // 1) ipwho.is
+        try {
+          const d = await fetchJSON("https://ipwho.is/");
+          if (d && d.success !== false && d.latitude != null)
+            return {
+              lat: +d.latitude,
+              lon: +d.longitude,
+              label: [d.city, d.country].filter(Boolean).join(", "),
+            };
+        } catch (e) {}
+        // 2) ipapi.co
+        try {
+          const d = await fetchJSON("https://ipapi.co/json/");
+          if (d && d.latitude != null)
+            return {
+              lat: +d.latitude,
+              lon: +d.longitude,
+              label: [d.city, d.country_name].filter(Boolean).join(", "),
+            };
+        } catch (e) {}
+        // 3) respaldo fijo
+        return {
+          lat: CFG.FALLBACK.lat,
+          lon: CFG.FALLBACK.lon,
+          label: CFG.FALLBACK.label,
+          fallback: true,
+        };
+      }
+
+      /* ---- Capa de radar RainViewer + animación en bucle ---- */
+      let radarLayers = [];
+
+      async function loadRadar() {
+        let data;
+        try {
+          data = await fetchJSON("https://api.rainviewer.com/public/weather-maps.json", 6000);
+        } catch (e) {
+          showNotice("Sin datos de radar ahora mismo");
+          return;
+        }
+
+        const host = data.host;
+        const frames = data.radar && data.radar.past ? data.radar.past : [];
+        if (!frames.length) {
+          showNotice("Sin datos de radar ahora mismo");
+          return;
+        }
+
+        frames.forEach((f) => {
+          const url = `${host}${f.path}/${CFG.TILE_SIZE}/{z}/{x}/{y}/${CFG.COLOR}/${CFG.OPTIONS}.png`;
+          const layer = L.tileLayer(url, {
+            pane: "radar",
+            opacity: 0,
+            tileSize: CFG.TILE_SIZE,
+            maxNativeZoom: 7,
+            maxZoom: 19,
+          });
+          layer._time = f.time;
+          layer.addTo(map); // se precargan para un bucle fluido
+          radarLayers.push(layer);
+        });
+
+        const n = radarLayers.length;
+        const updateHud = (i) => {
+          radarLayers.forEach((l, j) => l.setOpacity(j === i ? CFG.RADAR_OPACITY : 0));
+          const pct = n > 1 ? (i / (n - 1)) * 100 : 100;
+          $("rvFill").style.width = pct + "%";
+          $("rvDot").style.left = pct + "%";
+          $("rvClock").textContent = fmtTime(radarLayers[i]._time);
+          $("rvLive").classList.toggle("is-on", i === n - 1);
+        };
+
+        let idx = n - 1;
+        updateHud(idx); // arranca mostrando el frame "ahora"
+
+        if (prefersReduced || n < 2) return; // sin animación si se prefiere movimiento reducido
+
+        const tick = () => {
+          idx = (idx + 1) % n;
+          updateHud(idx);
+          setTimeout(tick, idx === n - 1 ? CFG.PAUSE_LAST_MS : CFG.FRAME_MS);
+        };
+        setTimeout(tick, 900); // pequeña espera para que carguen los tiles
+      }
+
+      /* ---- Arranque ---- */
+      (async function init() {
+        loadRadar(); // el radar es global; no depende de la ubicación
+        const loc = await locate();
+        map.setView([loc.lat, loc.lon], CFG.ZOOM, { animate: true });
+        L.marker([loc.lat, loc.lon], {
+          icon: L.divIcon({
+            className: "user-pin",
+            html: '<span class="user-pin__ring"></span><span class="user-pin__core"></span>',
+            iconSize: [9, 9],
+          }),
+          keyboard: false,
+          interactive: false,
+        }).addTo(map);
+        $("rvPlace").textContent = loc.label || "tu zona";
+      })();
+    </script>
+  </body>
+</html>
