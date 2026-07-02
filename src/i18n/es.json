@@ -25,6 +25,9 @@
   "hero.radar.heavy": "fuerte",
   "hero.radar.scale": "hace 2 h → ahora",
   "hero.radar.now": "ahora",
+  "hero.radar.pause": "Pausar",
+  "hero.radar.play": "Reproducir",
+  "hero.radar.speed": "Velocidad de reproducción",
 
   "triad.hw.title": "Hardware e Integración",
   "triad.hw.body": "Arreglos de antenas y módulos transceptores de ingeniería de precisión diseñados para una confiabilidad extrema en los entornos meteorológicos más severos.",

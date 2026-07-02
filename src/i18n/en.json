@@ -25,6 +25,9 @@
   "hero.radar.heavy": "heavy",
   "hero.radar.scale": "2 h ago → now",
   "hero.radar.now": "now",
+  "hero.radar.pause": "Pause",
+  "hero.radar.play": "Play",
+  "hero.radar.speed": "Playback speed",
 
   "triad.hw.title": "Hardware & Integration",
   "triad.hw.body": "Precision-engineered antenna arrays and transceiver modules designed for extreme reliability in harshest meteorological environments.",
