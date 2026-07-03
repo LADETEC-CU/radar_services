@@ -976,6 +976,11 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     subdomains: "abcd",
     maxZoom: 19,
     detectRetina: true,
+    // Fetch one zoom level down and stretch 2x so city labels render bigger
+    // than the base tiles (CartoDB bakes label text into the tile image, so
+    // font-size can't be set via CSS).
+    tileSize: 512,
+    zoomOffset: -1,
   }).addTo(map);
 
   const rhScope = document.querySelector(".rh-scope") as HTMLElement;
