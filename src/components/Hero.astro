@@ -34,8 +34,8 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
 
     display: grid;
     grid-template-columns: minmax(400px, 500px) 1fr;
-    min-height: 100vh;
-    min-height: 100dvh;
+    height: 100vh;
+    height: 100dvh;
   }
 
   /* ---- Copy column ---- */
@@ -45,8 +45,8 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     display: flex;
     flex-direction: column;
     justify-content: center;
+    overflow-y: auto;
     border-right: 1px solid var(--lh-line);
-    background: var(--lh-bg);
     color: var(--lh-text);
   }
 
@@ -141,20 +141,25 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
 
   .rh-actions {
     display: flex;
-    gap: 0.9rem;
-    flex-wrap: wrap;
+    gap: 0.7rem;
+    flex-wrap: nowrap;
   }
   .rh-cta-primary,
   .rh-cta-secondary {
     display: inline-block;
+    flex: 1 1 0;
+    min-width: 0;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 0.82rem;
+    font-size: clamp(0.68rem, 1.6vw, 0.82rem);
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.04em;
     text-transform: uppercase;
     text-decoration: none;
     text-align: center;
-    padding: 1rem 1.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 1rem 1rem;
     border-radius: 5px;
     transition:
       transform 0.12s,
@@ -180,11 +185,16 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
 
   .rh-proof {
     display: flex;
-    gap: 2.2rem;
-    flex-wrap: wrap;
+    gap: 1rem;
+    flex-wrap: nowrap;
+    justify-content: space-between;
     margin-top: 0.4rem;
     padding-top: 1.4rem;
     border-top: 1px solid var(--lh-line);
+  }
+  .rh-proof div {
+    min-width: 0;
+    flex: 1 1 0;
   }
   .rh-proof div b {
     display: block;
@@ -206,7 +216,6 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   .rh-scope {
     position: relative;
     overflow: hidden;
-    background: var(--rh-bg);
     isolation: isolate;
   }
 
@@ -231,12 +240,17 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     color: #b9c4d1 !important;
   }
 
-  /* Language toggle, floating over the map */
-  .rh-lang {
+  /* Controls (theme toggle + language switch), floating over the map */
+  .rh-controls {
     position: absolute;
     top: 16px;
     right: 16px;
     z-index: 1001;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rh-lang {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 0.78rem;
     font-weight: 600;
@@ -250,6 +264,24 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   }
   .rh-lang:hover {
     border-color: var(--lh-teal);
+  }
+  .rh-theme-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lh-text);
+    border: 1px solid var(--lh-line);
+    background: rgba(10, 18, 22, 0.7);
+    backdrop-filter: blur(6px);
+    padding: 0.45rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .rh-theme-toggle:hover {
+    border-color: var(--lh-teal);
+  }
+  .rh-theme-toggle .material-symbols-outlined {
+    font-size: 1.15rem;
   }
 
   /* HUD layers */
@@ -564,6 +596,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   @media (max-width: 900px) {
     .radar-hero {
       grid-template-columns: 1fr;
+      height: auto;
       min-height: 0;
     }
     .rh-copy {
@@ -576,7 +609,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
       height: 70vh;
       min-height: 420px;
     }
-    .rh-lang {
+    .rh-controls {
       position: fixed;
     }
   }
@@ -614,6 +647,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   /* Focus visibility for keyboard users */
   .rh-copy-brand:focus-visible,
   .rh-lang:focus-visible,
+  .rh-theme-toggle:focus-visible,
   .rh-cta-primary:focus-visible,
   .rh-cta-secondary:focus-visible,
   .rh-timeline__track:focus-visible {
@@ -658,15 +692,26 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   </div>
 
   <div class="rh-scope" aria-label={t("hero.radar.aria")}>
-    <a
-      id="lang-toggle"
-      class="rh-lang"
-      href={switchHref}
-      hreflang={target}
-      aria-label={t("nav.switchLabel")}
-    >
-      {localeCode[target]}
-    </a>
+    <div class="rh-controls">
+      <button
+        id="hero-theme-toggle"
+        class="js-theme-toggle rh-theme-toggle"
+        aria-label="Toggle Theme"
+      >
+        <span class="material-symbols-outlined theme-icon-moon">dark_mode</span>
+        <span class="material-symbols-outlined theme-icon-sun">light_mode</span>
+      </button>
+
+      <a
+        id="lang-toggle"
+        class="rh-lang"
+        href={switchHref}
+        hreflang={target}
+        aria-label={t("nav.switchLabel")}
+      >
+        {localeCode[target]}
+      </a>
+    </div>
 
     <div id="rh-map" role="img" aria-label={t("hero.radar.mapAria")}></div>
 
@@ -743,9 +788,9 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
             role="group"
             aria-label={t("hero.radar.speed")}
           >
-            <button type="button" class="rh-control-btn" data-speed="0.25">1×</button>
-            <button type="button" class="rh-control-btn is-active" data-speed="0.5">2×</button>
-            <button type="button" class="rh-control-btn" data-speed="1">3×</button>
+            <button type="button" class="rh-control-btn" data-speed="0.25">0.5×</button>
+            <button type="button" class="rh-control-btn is-active" data-speed="0.5">1×</button>
+            <button type="button" class="rh-control-btn" data-speed="1">2×</button>
           </div>
         </div>
       </div>
