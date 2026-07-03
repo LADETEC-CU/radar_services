@@ -1,14 +1,21 @@
 ---
-import { resolveLang, useTranslations } from "../i18n/utils";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { resolveLang, useTranslations, otherLang, getRouteFromPathname } from "../i18n/utils";
+import { localeCode } from "../i18n/ui";
+
 const lang = resolveLang(Astro.currentLocale);
 const t = useTranslations(lang);
+
+const target = otherLang(lang);
+const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.pathname, lang));
 ---
 
 <style is:global>
   @import "leaflet/dist/leaflet.css";
 
-  /* ---- Radar hero: always-dark, theme-isolated ---- */
+  /* ---- Radar hero: always-dark, theme-isolated, split layout ---- */
   .radar-hero {
+    /* Map/HUD palette (unchanged from the previous iteration). */
     --rh-bg: #070b10;
     --rh-text: #e7ecf2;
     --rh-muted: #8a97a6;
@@ -16,58 +23,233 @@ const t = useTranslations(lang);
     --rh-panel: rgba(9, 13, 19, 0.55);
     --rh-signal: #35e0c4;
 
+    /* Copy-column palette (design brief tokens). */
+    --lh-bg: #0a1216;
+    --lh-panel: #0e171c;
+    --lh-line: #1d2b32;
+    --lh-text: #ebf1f3;
+    --lh-muted: #8fa3ab;
+    --lh-teal: #2fe6c3;
+    --lh-teal-dim: rgba(47, 230, 195, 0.14);
+
+    display: grid;
+    grid-template-columns: minmax(400px, 500px) 1fr;
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+
+  /* ---- Copy column ---- */
+  .rh-copy {
     position: relative;
-    width: 100%;
-    height: 100svh;
-    min-height: 560px;
+    padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3.25rem);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--lh-line);
+    background: var(--lh-bg);
+    color: var(--lh-text);
+  }
+
+  .rh-copy-brand {
+    position: absolute;
+    top: clamp(1.5rem, 3vw, 2.25rem);
+    left: clamp(1.5rem, 4vw, 3.25rem);
+    display: flex;
+    align-items: center;
+    gap: 0.65rem;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    font-size: 0.85rem;
+    color: var(--lh-text);
+    text-decoration: none;
+  }
+  .rh-copy-brand img {
+    display: block;
+  }
+
+  .rh-copy-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.6rem;
+  }
+
+  .rh-eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    color: var(--lh-teal);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .rh-eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 1px;
+    background: var(--lh-teal);
+  }
+
+  .rh-title {
+    font-family: "Archivo", sans-serif;
+    font-variation-settings:
+      "wdth" 100,
+      "wght" 500;
+    font-size: clamp(2.4rem, 4.3vw, 3.7rem);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+    margin: 0;
+  }
+  .rh-title .rh-accent {
+    color: var(--lh-teal);
+    font-size: xx-large;
+  }
+
+  .rh-lede {
+    color: var(--lh-muted);
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.65;
+    max-width: 42ch;
+    margin: 0;
+  }
+  .rh-lede strong {
+    color: var(--lh-text);
+    font-weight: 600;
+  }
+
+  .rh-specs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+  .rh-chip {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.03em;
+    color: var(--lh-muted);
+    border: 1px solid var(--lh-line);
+    border-radius: 4px;
+    padding: 0.42rem 0.65rem;
+  }
+  .rh-chip strong {
+    color: var(--lh-text);
+    font-weight: 500;
+  }
+
+  .rh-actions {
+    display: flex;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+  .rh-cta-primary,
+  .rh-cta-secondary {
+    display: inline-block;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+    text-align: center;
+    padding: 1rem 1.5rem;
+    border-radius: 5px;
+    transition:
+      transform 0.12s,
+      background 0.15s,
+      border-color 0.15s,
+      box-shadow 0.25s;
+  }
+  .rh-cta-primary {
+    background: var(--lh-teal);
+    color: #06211b;
+  }
+  .rh-cta-primary:hover {
+    background: #54edd0;
+    transform: translateY(-1px);
+  }
+  .rh-cta-secondary {
+    color: var(--lh-text);
+    border: 1px solid var(--lh-line);
+  }
+  .rh-cta-secondary:hover {
+    border-color: var(--lh-teal);
+  }
+
+  .rh-proof {
+    display: flex;
+    gap: 2.2rem;
+    flex-wrap: wrap;
+    margin-top: 0.4rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid var(--lh-line);
+  }
+  .rh-proof div b {
+    display: block;
+    font-family: "Archivo", sans-serif;
+    font-variation-settings:
+      "wdth" 115,
+      "wght" 700;
+    font-size: 1.35rem;
+    font-style: normal;
+  }
+  .rh-proof div span {
+    font-family: "IBM Plex Sans", system-ui, sans-serif;
+    font-size: 0.76rem;
+    color: var(--lh-muted);
+    letter-spacing: 0.02em;
+  }
+
+  /* ---- Radar viewport column ---- */
+  .rh-scope {
+    position: relative;
     overflow: hidden;
     background: var(--rh-bg);
     isolation: isolate;
   }
 
-  .radar-hero #rh-map {
+  .rh-scope #rh-map {
     position: absolute;
     inset: 0;
     z-index: 0;
   }
 
-  .radar-hero .leaflet-container {
+  .rh-scope .leaflet-container {
     background: var(--rh-bg);
     font-family: "JetBrains Mono", ui-monospace, monospace;
   }
-  .radar-hero .leaflet-control-attribution {
+  .rh-scope .leaflet-control-attribution {
     background: rgba(7, 11, 16, 0.66) !important;
     color: var(--rh-muted) !important;
     font-family: "JetBrains Mono", ui-monospace, monospace;
     font-size: 10.5px;
     backdrop-filter: blur(4px);
   }
-  .radar-hero .leaflet-control-attribution a {
+  .rh-scope .leaflet-control-attribution a {
     color: #b9c4d1 !important;
   }
 
-  /* Scrims */
-  .rh-scrim {
+  /* Language toggle, floating over the map */
+  .rh-lang {
     position: absolute;
-    inset: 0;
-    z-index: 400;
-    pointer-events: none;
+    top: 16px;
+    right: 16px;
+    z-index: 1001;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--lh-text);
+    text-decoration: none;
+    border: 1px solid var(--lh-line);
+    background: rgba(10, 18, 22, 0.7);
+    backdrop-filter: blur(6px);
+    padding: 0.45rem 0.7rem;
+    border-radius: 4px;
   }
-  .rh-scrim::before,
-  .rh-scrim::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    height: 34%;
-  }
-  .rh-scrim::before {
-    top: 0;
-    background: linear-gradient(to bottom, rgba(7, 11, 16, 0.78), rgba(7, 11, 16, 0));
-  }
-  .rh-scrim::after {
-    bottom: 0;
-    background: linear-gradient(to top, rgba(7, 11, 16, 0.86), rgba(7, 11, 16, 0));
+  .rh-lang:hover {
+    border-color: var(--lh-teal);
   }
 
   /* HUD layers */
@@ -80,7 +262,7 @@ const t = useTranslations(lang);
     top: 0;
     left: 0;
     right: 0;
-    padding: 22px clamp(18px, 4vw, 44px);
+    padding: 22px calc(clamp(18px, 4vw, 44px) + 84px) 22px clamp(18px, 4vw, 44px);
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -98,7 +280,7 @@ const t = useTranslations(lang);
     flex-wrap: wrap;
   }
 
-  /* Brand / live dot */
+  /* Radar live indicator */
   .rh-brand {
     display: flex;
     align-items: center;
@@ -141,87 +323,6 @@ const t = useTranslations(lang);
   .rh-place strong {
     color: var(--rh-text);
     font-weight: 500;
-  }
-
-  /* Pitch overlay */
-  .rh-pitch {
-    position: absolute;
-    z-index: 1000;
-    pointer-events: none;
-    top: clamp(76px, 14vh, 150px);
-    left: clamp(18px, 4vw, 44px);
-    max-width: min(560px, 80%);
-  }
-  .rh-pitch h1 {
-    margin: 0 0 10px;
-    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-    font-size: clamp(28px, 5vw, 52px);
-    line-height: 1.03;
-    font-weight: 600;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-    text-shadow: 0 2px 30px rgba(0, 0, 0, 0.55);
-    color: var(--rh-text);
-  }
-  .rh-pitch h1 .rh-accent {
-    color: var(--rh-signal);
-  }
-  .rh-pitch p {
-    margin: 0 0 24px;
-    font-family: "Inter", ui-sans-serif, system-ui, sans-serif;
-    font-size: clamp(14px, 1.6vw, 17px);
-    line-height: 1.5;
-    color: #c2ccd7;
-    max-width: 44ch;
-  }
-  .rh-ctas {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    pointer-events: all;
-  }
-  @media (min-width: 480px) {
-    .rh-ctas {
-      flex-direction: row;
-    }
-  }
-
-  .rh-cta-primary {
-    display: inline-block;
-    background: var(--rh-signal);
-    color: var(--rh-bg);
-    padding: 14px 32px;
-    font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    font-weight: 700;
-    text-transform: uppercase;
-    text-decoration: none;
-    text-align: center;
-    box-shadow: 0 0 0 rgba(53, 224, 196, 0);
-    transition:
-      box-shadow 0.25s,
-      transform 0.25s;
-  }
-  .rh-cta-primary:hover {
-    box-shadow: 0 0 22px rgba(53, 224, 196, 0.55);
-    transform: translateY(-2px);
-  }
-  .rh-cta-secondary {
-    display: inline-block;
-    border: 1px solid var(--rh-signal);
-    color: var(--rh-signal);
-    padding: 14px 32px;
-    font-family: "JetBrains Mono", ui-monospace, monospace;
-    font-size: 11px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-decoration: none;
-    text-align: center;
-    transition: background 0.2s;
-  }
-  .rh-cta-secondary:hover {
-    background: rgba(53, 224, 196, 0.1);
   }
 
   /* Intensity legend */
@@ -375,6 +476,27 @@ const t = useTranslations(lang);
     border-color: var(--rh-signal);
   }
 
+  .rh-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 6px;
+    line-height: 0;
+  }
+  .rh-icon-btn svg {
+    fill: currentColor;
+    display: block;
+  }
+  .rh-icon-btn .rh-icon-play {
+    display: none;
+  }
+  .rh-icon-btn[aria-pressed="true"] .rh-icon-pause {
+    display: none;
+  }
+  .rh-icon-btn[aria-pressed="true"] .rh-icon-play {
+    display: block;
+  }
+
   /* User location marker */
   .rh-user-pin {
     position: relative;
@@ -438,12 +560,33 @@ const t = useTranslations(lang);
     opacity: 1;
   }
 
+  /* ---- Responsive: single column below 900px ---- */
+  @media (max-width: 900px) {
+    .radar-hero {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    .rh-copy {
+      border-right: none;
+      border-bottom: 1px solid var(--lh-line);
+      padding-top: 6rem;
+      padding-bottom: 2.5rem;
+    }
+    .rh-scope {
+      height: 70vh;
+      min-height: 420px;
+    }
+    .rh-lang {
+      position: fixed;
+    }
+  }
+
   @media (max-width: 640px) {
     .rh-place {
       display: none;
     }
-    .rh-pitch {
-      max-width: 88%;
+    .rh-hud--top {
+      padding-right: clamp(18px, 4vw, 44px);
     }
     .rh-hud--bottom {
       gap: 16px;
@@ -467,89 +610,149 @@ const t = useTranslations(lang);
       transition: none;
     }
   }
+
+  /* Focus visibility for keyboard users */
+  .rh-copy-brand:focus-visible,
+  .rh-lang:focus-visible,
+  .rh-cta-primary:focus-visible,
+  .rh-cta-secondary:focus-visible,
+  .rh-timeline__track:focus-visible {
+    outline: 2px solid var(--lh-teal);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 </style>
 
-<section id="hero" class="radar-hero" aria-label={t("hero.radar.aria")}>
-  <div id="rh-map" role="img" aria-label={t("hero.radar.mapAria")}></div>
-  <div class="rh-scrim"></div>
+<section id="hero" class="radar-hero" aria-labelledby="hero-title">
+  <div class="rh-copy">
+    <a class="rh-copy-brand" href="#hero" aria-label="LADETEC SYSTEMS">
+      <img src="/logo.webp" alt="" width="24" height="24" />
+      <span>LADETEC&nbsp;SYSTEMS</span>
+    </a>
 
-  <!-- Top HUD -->
-  <div class="rh-hud rh-hud--top">
-    <div class="rh-brand">
-      <span class="rh-live-dot"></span>
-      {t("hero.radar.live")} &middot; <span class="rh-brand__name">Radar</span>
-    </div>
-    <div class="rh-place">
-      {t("hero.radar.over")}
-      <strong id="rvPlace">{t("hero.radar.locating")}</strong>
+    <div class="rh-copy-content">
+      <p class="rh-eyebrow">{t("hero.eyebrow")}</p>
+      <h1 id="hero-title" class="rh-title">
+        {t("hero.title.lead")}
+        <span class="rh-accent">{t("hero.title.accent")}</span>
+      </h1>
+      <p class="rh-lede" set:html={t("hero.lead")} />
+
+      <div class="rh-specs" aria-label={t("hero.specs.aria")}>
+        <span class="rh-chip" set:html={t("hero.chip1")} />
+        <span class="rh-chip" set:html={t("hero.chip2")} />
+        <span class="rh-chip" set:html={t("hero.chip3")} />
+      </div>
+
+      <div class="rh-actions">
+        <a href="#tech-focus" class="rh-cta-primary">{t("hero.cta.primary")}</a>
+        <a href="#contact" class="rh-cta-secondary">{t("hero.cta.secondary")}</a>
+      </div>
+
+      <div class="rh-proof">
+        <div><b>{t("hero.proof1.value")}</b><span>{t("hero.proof1.label")}</span></div>
+        <div><b>{t("hero.proof2.value")}</b><span>{t("hero.proof2.label")}</span></div>
+        <div><b>{t("hero.proof3.value")}</b><span>{t("hero.proof3.label")}</span></div>
+      </div>
     </div>
   </div>
 
-  <!-- Pitch -->
-  <div class="rh-pitch">
-    <h1>
-      {t("hero.title.lead")}<br />
-      <span class="rh-accent">{t("hero.title.accent")}</span>
-    </h1>
-    <p set:html={t("hero.lead")} />
-    <div class="rh-ctas">
-      <a href="#tech-focus" class="rh-cta-primary">{t("hero.cta.primary")}</a>
-      <a href="#contact" class="rh-cta-secondary">{t("hero.cta.secondary")}</a>
-    </div>
-  </div>
+  <div class="rh-scope" aria-label={t("hero.radar.aria")}>
+    <a
+      id="lang-toggle"
+      class="rh-lang"
+      href={switchHref}
+      hreflang={target}
+      aria-label={t("nav.switchLabel")}
+    >
+      {localeCode[target]}
+    </a>
 
-  <!-- Bottom HUD -->
-  <div class="rh-hud rh-hud--bottom">
-    <div class="rh-legend">
-      <div class="rh-legend__label">{t("hero.radar.intensity")}</div>
-      <div class="rh-legend__bar"></div>
-      <div class="rh-legend__scale">
-        <span>{t("hero.radar.light")}</span>
-        <span>{t("hero.radar.heavy")}</span>
+    <div id="rh-map" role="img" aria-label={t("hero.radar.mapAria")}></div>
+
+    <!-- Top HUD: radar live status + resolved place name -->
+    <div class="rh-hud rh-hud--top">
+      <div class="rh-brand">
+        <span class="rh-live-dot"></span>
+        {t("hero.radar.live")} &middot; <span class="rh-brand__name">Radar</span>
+      </div>
+      <div class="rh-place">
+        {t("hero.radar.over")}
+        <strong id="rvPlace">{t("hero.radar.locating")}</strong>
       </div>
     </div>
 
-    <div class="rh-timeline">
-      <div class="rh-timeline__head">
-        <span class="rh-timeline__scale">{t("hero.radar.scale")}</span>
-        <span class="rh-timeline__readout">
-          <span id="rvClock">--:--</span>
-          <span class="rh-live-tag" id="rvLive">{t("hero.radar.now")}</span>
-        </span>
+    <!-- Bottom HUD: intensity legend + scrubbable timeline -->
+    <div class="rh-hud rh-hud--bottom">
+      <div class="rh-legend">
+        <div class="rh-legend__label">{t("hero.radar.intensity")}</div>
+        <div class="rh-legend__bar"></div>
+        <div class="rh-legend__scale">
+          <span>{t("hero.radar.light")}</span>
+          <span>{t("hero.radar.heavy")}</span>
+        </div>
       </div>
-      <div
-        class="rh-timeline__track"
-        id="rvTrack"
-        role="slider"
-        tabindex="0"
-        aria-label={t("hero.radar.scale")}
-        aria-valuemin="0"
-        aria-valuenow="0"
-      >
-        <div class="rh-timeline__fill" id="rvFill"></div>
-        <div class="rh-timeline__dot" id="rvDot"></div>
-      </div>
-      <div class="rh-timeline__controls" id="rvControls">
-        <button
-          type="button"
-          class="rh-control-btn"
-          id="rvPauseBtn"
-          aria-pressed="false"
-          data-pause={t("hero.radar.pause")}
-          data-play={t("hero.radar.play")}
+
+      <div class="rh-timeline">
+        <div class="rh-timeline__head">
+          <span class="rh-timeline__scale">{t("hero.radar.scale")}</span>
+          <span class="rh-timeline__readout">
+            <span id="rvClock">--:--</span>
+            <span class="rh-live-tag" id="rvLive">{t("hero.radar.now")}</span>
+          </span>
+        </div>
+        <div
+          class="rh-timeline__track"
+          id="rvTrack"
+          role="slider"
+          tabindex="0"
+          aria-label={t("hero.radar.scale")}
+          aria-valuemin="0"
+          aria-valuenow="0"
         >
-          {t("hero.radar.pause")}
-        </button>
-        <div class="rh-speed-group" id="rvSpeedGroup" role="group" aria-label={t("hero.radar.speed")}>
-          <button type="button" class="rh-control-btn" data-speed="0.25">1×</button>
-          <button type="button" class="rh-control-btn is-active" data-speed="0.5">2×</button>
-          <button type="button" class="rh-control-btn" data-speed="1">3×</button>
+          <div class="rh-timeline__fill" id="rvFill"></div>
+          <div class="rh-timeline__dot" id="rvDot"></div>
+        </div>
+        <div class="rh-timeline__controls" id="rvControls">
+          <button
+            type="button"
+            class="rh-control-btn rh-icon-btn"
+            id="rvPauseBtn"
+            aria-pressed="false"
+            aria-label={t("hero.radar.pause")}
+            data-pause={t("hero.radar.pause")}
+            data-play={t("hero.radar.play")}
+          >
+            <svg
+              class="rh-icon-pause"
+              viewBox="0 0 16 16"
+              width="11"
+              height="11"
+              aria-hidden="true"
+            >
+              <rect x="3" y="2" width="3.4" height="12"></rect>
+              <rect x="9.6" y="2" width="3.4" height="12"></rect>
+            </svg>
+            <svg class="rh-icon-play" viewBox="0 0 16 16" width="11" height="11" aria-hidden="true">
+              <path d="M4 2l10 6-10 6z"></path>
+            </svg>
+          </button>
+          <div
+            class="rh-speed-group"
+            id="rvSpeedGroup"
+            role="group"
+            aria-label={t("hero.radar.speed")}
+          >
+            <button type="button" class="rh-control-btn" data-speed="0.25">1×</button>
+            <button type="button" class="rh-control-btn is-active" data-speed="0.5">2×</button>
+            <button type="button" class="rh-control-btn" data-speed="1">3×</button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <div class="rh-notice" id="rvNotice" data-nodata={t("hero.radar.nodata")}></div>
+    <div class="rh-notice" id="rvNotice" data-nodata={t("hero.radar.nodata")}></div>
+  </div>
 </section>
 
 <script>
@@ -746,7 +949,10 @@ const t = useTranslations(lang);
       paused = !paused;
       pauseBtn.classList.toggle("is-active", paused);
       pauseBtn.setAttribute("aria-pressed", String(paused));
-      pauseBtn.textContent = paused ? pauseBtn.dataset.play! : pauseBtn.dataset.pause!;
+      pauseBtn.setAttribute(
+        "aria-label",
+        paused ? pauseBtn.dataset.play! : pauseBtn.dataset.pause!
+      );
       if (paused) window.clearTimeout(timer);
       else scheduleTick(nextDelay());
     });
@@ -811,4 +1017,43 @@ const t = useTranslations(lang);
     interactive: false,
   }).addTo(map);
   $rh("rvPlace").textContent = loc.label || "—";
+
+  // Language switcher: keep it pointed at the section currently in view, so
+  // switching locale lands you in the same place instead of scrolling to top.
+  const langToggle = document.getElementById("lang-toggle");
+  if (langToggle) {
+    const baseHref = langToggle.getAttribute("href") ?? "";
+    const anchorIds = new Set(
+      [...document.querySelectorAll('a[href^="#"]')].map((a) =>
+        (a.getAttribute("href") ?? "").slice(1)
+      )
+    );
+    const visible = new Map<string, number>();
+    const apply = () => {
+      let activeId = "";
+      let best = 0;
+      for (const [id, ratio] of visible) {
+        if (ratio > best) {
+          best = ratio;
+          activeId = id;
+        }
+      }
+      langToggle.setAttribute("href", baseHref + (activeId ? "#" + activeId : ""));
+    };
+    const spy = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting) visible.set(e.target.id, e.intersectionRatio);
+          else visible.delete(e.target.id);
+        }
+        apply();
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+    document.querySelectorAll("main [id]").forEach((el) => {
+      if (anchorIds.has(el.id)) spy.observe(el);
+    });
+    const footerEl = document.querySelector("footer[id]");
+    if (footerEl) spy.observe(footerEl);
+  }
 </script>
