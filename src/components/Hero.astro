@@ -60,6 +60,14 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   /* ---- Copy column ---- */
   .rh-copy {
     position: relative;
+    /* Black backdrop: revealed behind .rh-copy-panel as it fades out on scroll-out. */
+    background: #000;
+  }
+
+  .rh-copy-panel {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
     padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3.25rem);
     display: flex;
     flex-direction: column;
@@ -67,6 +75,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     overflow-y: auto;
     border-right: 1px solid var(--lh-line);
     color: var(--lh-text);
+    background: var(--lh-bg);
   }
 
   .rh-copy-brand {
@@ -236,12 +245,15 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     position: relative;
     overflow: hidden;
     isolation: isolate;
+    /* Black backdrop: revealed behind the map as it fades out on scroll-out. */
+    background: #000;
   }
 
   .rh-scope #rh-map {
     position: absolute;
     inset: 0;
     z-index: 0;
+    will-change: transform, opacity;
   }
 
   .rh-scope .leaflet-container {
@@ -265,6 +277,15 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     filter: none;
   }
 
+  /* Scroll-out: legend + playback controls disappear, radar loop is stopped
+     via JS (below) instead of just fading — no point animating hidden tiles. */
+  .rh-scope.rh-exited .rh-legend,
+  .rh-scope.rh-exited .rh-controls,
+  .rh-scope.rh-exited .rh-timeline {
+    opacity: 0;
+    pointer-events: none;
+  }
+
   /* Controls (theme toggle + language switch), floating over the map */
   .rh-controls {
     position: absolute;
@@ -274,6 +295,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     display: flex;
     align-items: center;
     gap: 8px;
+    transition: opacity 0.25s ease;
   }
   .rh-lang {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
@@ -385,6 +407,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   /* Intensity legend */
   .rh-legend {
     pointer-events: none;
+    transition: opacity 0.25s ease;
   }
   .rh-legend__label {
     font-family: "JetBrains Mono", monospace;
@@ -424,6 +447,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     min-width: min(360px, 90vw);
     flex: 1 1 300px;
     max-width: 520px;
+    transition: opacity 0.25s ease;
   }
   .rh-timeline__head {
     display: flex;
@@ -650,7 +674,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
       height: auto;
       min-height: 0;
     }
-    .rh-copy {
+    .rh-copy-panel {
       border-right: none;
       border-bottom: 1px solid var(--lh-line);
       padding-top: 6rem;
@@ -710,34 +734,36 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
 
 <section id="hero" class="radar-hero" aria-labelledby="hero-title">
   <div class="rh-copy">
-    <a class="rh-copy-brand" href="#hero" aria-label="LADETEC SYSTEMS">
-      <img src="/logo.webp" alt="" width="24" height="24" />
-      <span>LADETEC&nbsp;SYSTEMS</span>
-    </a>
+    <div class="rh-copy-panel" id="rhCopyPanel">
+      <a class="rh-copy-brand" href="#hero" aria-label="LADETEC SYSTEMS">
+        <img src="/logo.webp" alt="" width="24" height="24" />
+        <span>LADETEC&nbsp;SYSTEMS</span>
+      </a>
 
-    <div class="rh-copy-content">
-      <p class="rh-eyebrow">{t("hero.eyebrow")}</p>
-      <h1 id="hero-title" class="rh-title">
-        {t("hero.title.lead")}
-        <span class="rh-accent">{t("hero.title.accent")}</span>
-      </h1>
-      <p class="rh-lede" set:html={t("hero.lead")} />
+      <div class="rh-copy-content">
+        <p class="rh-eyebrow">{t("hero.eyebrow")}</p>
+        <h1 id="hero-title" class="rh-title">
+          {t("hero.title.lead")}
+          <span class="rh-accent">{t("hero.title.accent")}</span>
+        </h1>
+        <p class="rh-lede" set:html={t("hero.lead")} />
 
-      <div class="rh-specs" aria-label={t("hero.specs.aria")}>
-        <span class="rh-chip" set:html={t("hero.chip1")} />
-        <span class="rh-chip" set:html={t("hero.chip2")} />
-        <span class="rh-chip" set:html={t("hero.chip3")} />
-      </div>
+        <div class="rh-specs" aria-label={t("hero.specs.aria")}>
+          <span class="rh-chip" set:html={t("hero.chip1")} />
+          <span class="rh-chip" set:html={t("hero.chip2")} />
+          <span class="rh-chip" set:html={t("hero.chip3")} />
+        </div>
 
-      <div class="rh-actions">
-        <a href="#tech-focus" class="rh-cta-primary">{t("hero.cta.primary")}</a>
-        <a href="#contact" class="rh-cta-secondary">{t("hero.cta.secondary")}</a>
-      </div>
+        <div class="rh-actions">
+          <a href="#tech-focus" class="rh-cta-primary">{t("hero.cta.primary")}</a>
+          <a href="#contact" class="rh-cta-secondary">{t("hero.cta.secondary")}</a>
+        </div>
 
-      <div class="rh-proof">
-        <div><b>{t("hero.proof1.value")}</b><span>{t("hero.proof1.label")}</span></div>
-        <div><b>{t("hero.proof2.value")}</b><span>{t("hero.proof2.label")}</span></div>
-        <div><b>{t("hero.proof3.value")}</b><span>{t("hero.proof3.label")}</span></div>
+        <div class="rh-proof">
+          <div><b>{t("hero.proof1.value")}</b><span>{t("hero.proof1.label")}</span></div>
+          <div><b>{t("hero.proof2.value")}</b><span>{t("hero.proof2.label")}</span></div>
+          <div><b>{t("hero.proof3.value")}</b><span>{t("hero.proof3.label")}</span></div>
+        </div>
       </div>
     </div>
   </div>
@@ -953,6 +979,11 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   }).addTo(map);
 
   const rhScope = document.querySelector(".rh-scope") as HTMLElement;
+  const radarPlayback = {
+    exited: false,
+    pause: () => {},
+    resume: () => {},
+  };
 
   function applyMapTheme(isDark: boolean) {
     const tiles = isDark ? BASE_TILES.dark : BASE_TILES.light;
@@ -967,6 +998,49 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     attributes: true,
     attributeFilter: ["class"],
   });
+
+  // Scroll-out effect: map lags behind page scroll (parallax) while its own
+  // opacity fades to black (the scope's backdrop), timed to the hero leaving the viewport.
+  if (!prefersReduced) {
+    const heroEl = document.getElementById("hero") as HTMLElement;
+    const mapEl = $rh("rh-map");
+    const copyEl = $rh("rhCopyPanel");
+    const PARALLAX_FACTOR = 0.35;
+    const FADE_SPAN = 0.95; // opacity hits 0 well before the section fully scrolls out
+    const EXIT_THRESHOLD = 0.01; // scroll past this and the radar loop/legend/controls stop
+    let ticking = false;
+
+    const updateHeroScroll = () => {
+      const heroHeight = heroEl.offsetHeight;
+      const progress = Math.min(Math.max(-heroEl.getBoundingClientRect().top / heroHeight, 0), 1);
+      const fade = Math.min(progress / FADE_SPAN, 1);
+      const opacity = String((1 - fade) ** 2);
+      mapEl.style.transform = `translateY(${progress * heroHeight * PARALLAX_FACTOR}px)`;
+      mapEl.style.opacity = opacity;
+      copyEl.style.opacity = opacity;
+
+      const exited = progress > EXIT_THRESHOLD;
+      if (exited !== radarPlayback.exited) {
+        radarPlayback.exited = exited;
+        rhScope.classList.toggle("rh-exited", exited);
+        if (exited) radarPlayback.pause();
+        else radarPlayback.resume();
+      }
+      ticking = false;
+    };
+
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(updateHeroScroll);
+        }
+      },
+      { passive: true }
+    );
+    updateHeroScroll();
+  }
 
   async function fetchJSON(url: string, ms = 4000): Promise<unknown> {
     const ctrl = new AbortController();
@@ -1084,6 +1158,11 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     };
 
     scheduleTick(900);
+
+    radarPlayback.pause = () => window.clearTimeout(timer);
+    radarPlayback.resume = () => {
+      if (!paused && !radarPlayback.exited) scheduleTick(nextDelay());
+    };
 
     const pauseBtn = $rh("rvPauseBtn") as HTMLButtonElement;
     pauseBtn.addEventListener("click", () => {
