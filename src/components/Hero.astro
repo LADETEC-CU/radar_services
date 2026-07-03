@@ -13,9 +13,9 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
 <style is:global>
   @import "leaflet/dist/leaflet.css";
 
-  /* ---- Radar hero: always-dark, theme-isolated, split layout ---- */
+  /* ---- Radar hero: split layout, own palette that follows site theme ---- */
   .radar-hero {
-    /* Map/HUD palette (unchanged from the previous iteration). */
+    /* Map/HUD palette — dark values (default). */
     --rh-bg: #070b10;
     --rh-text: #e7ecf2;
     --rh-muted: #8a97a6;
@@ -23,7 +23,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     --rh-panel: rgba(9, 13, 19, 0.55);
     --rh-signal: #35e0c4;
 
-    /* Copy-column palette (design brief tokens). */
+    /* Copy-column palette — dark values (default). */
     --lh-bg: #0a1216;
     --lh-panel: #0e171c;
     --lh-line: #1d2b32;
@@ -36,6 +36,25 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     grid-template-columns: minmax(400px, 500px) 1fr;
     height: 100vh;
     height: 100dvh;
+    background: var(--lh-bg);
+  }
+
+  /* Light-mode overrides — same roles, mirrors the site's light/dark tokens. */
+  html:not(.dark) .radar-hero {
+    --rh-bg: #eef2f4;
+    --rh-text: #16212b;
+    --rh-muted: #5b6672;
+    --rh-line: rgba(15, 23, 32, 0.14);
+    --rh-panel: rgba(255, 255, 255, 0.78);
+    --rh-signal: #00898f;
+
+    --lh-bg: #f4f6fa;
+    --lh-panel: #ffffff;
+    --lh-line: #d8dee3;
+    --lh-text: #1c1f2a;
+    --lh-muted: #5b6672;
+    --lh-teal: #00898f;
+    --lh-teal-dim: rgba(0, 137, 143, 0.12);
   }
 
   /* ---- Copy column ---- */
@@ -242,6 +261,9 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   .rh-scope .rh-tile-base {
     filter: url(#rh-tile-tint);
   }
+  .rh-scope.rh-theme-light .rh-tile-base {
+    filter: none;
+  }
 
   /* Controls (theme toggle + language switch), floating over the map */
   .rh-controls {
@@ -429,7 +451,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     letter-spacing: 0.14em;
     padding: 2px 7px;
     border-radius: 999px;
-    color: var(--rh-bg);
+    color: #06211b;
     background: var(--rh-signal);
     font-weight: 600;
     opacity: 0;
@@ -506,7 +528,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     border-color: var(--rh-signal);
   }
   .rh-control-btn.is-active {
-    color: var(--rh-bg);
+    color: #06211b;
     background: var(--rh-signal);
     border-color: var(--rh-signal);
   }
@@ -593,6 +615,32 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   }
   .rh-notice.is-on {
     opacity: 1;
+  }
+
+  /* Light-mode overrides for chips/lines hardcoded against the dark map —
+     these can't be plain CSS vars because they layer a fixed alpha atop a
+     fixed hue (translucent chip fills, halos), so light mode gets its own
+     literal values instead of a var swap. */
+  html:not(.dark) .rh-scope .leaflet-control-attribution {
+    background: rgba(255, 255, 255, 0.72) !important;
+  }
+  html:not(.dark) .rh-scope .leaflet-control-attribution a {
+    color: #3c5560 !important;
+  }
+  html:not(.dark) .rh-lang,
+  html:not(.dark) .rh-theme-toggle {
+    background: rgba(255, 255, 255, 0.72);
+  }
+  html:not(.dark) .rh-timeline__track {
+    background: rgba(15, 23, 32, 0.14);
+  }
+  html:not(.dark) .rh-user-pin__core {
+    box-shadow:
+      0 0 0 2px rgba(255, 255, 255, 0.9),
+      0 0 14px rgba(0, 137, 143, 0.8);
+  }
+  html:not(.dark) .rh-cta-primary:hover {
+    background: #00a9b0;
   }
 
   /* ---- Responsive: single column below 900px ---- */
@@ -877,19 +925,48 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     '© <a href="https://carto.com/attributions">CARTO</a> · ' +
     'Weather data by <a href="https://www.rainviewer.com/">RainViewer</a>';
 
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png", {
+  const BASE_TILES = {
+    dark: {
+      base: "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
+      labels: "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
+    },
+    light: {
+      base: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
+      labels: "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+    },
+  };
+
+  const isSiteDark = () => document.documentElement.classList.contains("dark");
+
+  const baseLayer = L.tileLayer(BASE_TILES.dark.base, {
     className: "rh-tile-base",
     subdomains: "abcd",
     maxZoom: 19,
     detectRetina: true,
     attribution,
   }).addTo(map);
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png", {
+  const labelsLayer = L.tileLayer(BASE_TILES.dark.labels, {
     pane: "labels",
     subdomains: "abcd",
     maxZoom: 19,
     detectRetina: true,
   }).addTo(map);
+
+  const rhScope = document.querySelector(".rh-scope") as HTMLElement;
+
+  function applyMapTheme(isDark: boolean) {
+    const tiles = isDark ? BASE_TILES.dark : BASE_TILES.light;
+    baseLayer.setUrl(tiles.base);
+    labelsLayer.setUrl(tiles.labels);
+    rhScope.classList.toggle("rh-theme-light", !isDark);
+  }
+
+  applyMapTheme(isSiteDark());
+
+  new MutationObserver(() => applyMapTheme(isSiteDark())).observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["class"],
+  });
 
   async function fetchJSON(url: string, ms = 4000): Promise<unknown> {
     const ctrl = new AbortController();
