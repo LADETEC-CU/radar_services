@@ -85,5 +85,21 @@ const ogImage = new URL("/og.webp", Astro.site).href;
 
     <!-- Main Content Slot -->
     <slot />
+
+    <script>
+      // Theme Toggler Logic — shared by any element with class js-theme-toggle
+      document.querySelectorAll(".js-theme-toggle").forEach((themeToggle) => {
+        themeToggle.addEventListener("click", () => {
+          const isDark = document.documentElement.classList.contains("dark");
+          if (isDark) {
+            document.documentElement.classList.remove("dark");
+            localStorage.setItem("theme", "light");
+          } else {
+            document.documentElement.classList.add("dark");
+            localStorage.setItem("theme", "dark");
+          }
+        });
+      });
+    </script>
   </body>
 </html>
