@@ -24,7 +24,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     --rh-signal: #35e0c4;
 
     /* Copy-column palette — dark values (default). */
-    --lh-bg: #0a1216;
+    --lh-bg: rgb(7, 11, 16);
     --lh-panel: #0e171c;
     --lh-line: #1d2b32;
     --lh-text: #ebf1f3;
@@ -48,7 +48,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     --rh-panel: rgba(255, 255, 255, 0.78);
     --rh-signal: #00898f;
 
-    --lh-bg: #f4f6fa;
+    --lh-bg: rgb(212, 218, 220);
     --lh-panel: #ffffff;
     --lh-line: #d8dee3;
     --lh-text: #1c1f2a;
@@ -73,7 +73,6 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     flex-direction: column;
     justify-content: center;
     overflow-y: auto;
-    border-right: 1px solid var(--lh-line);
     color: var(--lh-text);
     background: var(--lh-bg);
   }
@@ -675,8 +674,6 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
       min-height: 0;
     }
     .rh-copy-panel {
-      border-right: none;
-      border-bottom: 1px solid var(--lh-line);
       padding-top: 6rem;
       padding-bottom: 2.5rem;
     }
