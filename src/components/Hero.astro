@@ -700,13 +700,19 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
       padding-right: clamp(18px, 4vw, 44px);
     }
     .rh-hud--bottom {
+      top: 0;
       gap: 16px;
     }
     .rh-legend {
-      order: 2;
+      position: absolute;
+      top: 10px;
+      right: 16px;
+      z-index: 1001;
+    }
+    .rh-legend__bar {
+      width: 120px;
     }
     .rh-timeline {
-      order: 1;
       flex-basis: 100%;
     }
   }
