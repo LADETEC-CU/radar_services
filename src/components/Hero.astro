@@ -85,9 +85,9 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     align-items: center;
     gap: 0.65rem;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    font-size: 0.85rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    font-size: 1.5rem;
     color: var(--lh-text);
     text-decoration: none;
   }
@@ -673,6 +673,12 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
       height: auto;
       min-height: 0;
     }
+    /* Grid items default to min-width: auto, so their content's intrinsic
+       width (the unwrapped eyebrow/CTA row) blows out the 1fr track and
+       causes horizontal page overflow. Let it shrink and wrap instead. */
+    .rh-copy {
+      min-width: 0;
+    }
     .rh-copy-panel {
       padding-top: 6rem;
       padding-bottom: 2.5rem;
@@ -732,9 +738,9 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
 <section id="hero" class="radar-hero" aria-labelledby="hero-title">
   <div class="rh-copy">
     <div class="rh-copy-panel" id="rhCopyPanel">
-      <a class="rh-copy-brand" href="#hero" aria-label="LADETEC SYSTEMS">
-        <img src="/logo.webp" alt="" width="24" height="24" />
-        <span>LADETEC&nbsp;SYSTEMS</span>
+      <a class="rh-copy-brand" href="#hero" aria-label="LADETEC">
+        <img src="/logo.webp" alt="" width="32" height="32" />
+        <span>LADETEC</span>
       </a>
 
       <div class="rh-copy-content">
@@ -1001,27 +1007,38 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     attributeFilter: ["class"],
   });
 
-  // Scroll-out effect: map lags behind page scroll (parallax) while its own
-  // opacity fades to black (the scope's backdrop), timed to the hero leaving the viewport.
+  // Scroll-out effect: the map panel fades/parallaxes/pauses on its OWN
+  // scroll progress, independent of the copy panel. Below 900px the two
+  // panels are stacked sections (not a shared 100vh row), so the copy panel
+  // is left alone as a plain scrolling section instead of also fading out —
+  // tying both to one combined progress used to fade the copy text to
+  // nothing while it was still mid-scroll, and pause the radar loop before
+  // the map was even in view.
   if (!prefersReduced) {
-    const heroEl = document.getElementById("hero") as HTMLElement;
+    const copySection = document.querySelector(".rh-copy") as HTMLElement;
     const mapEl = $rh("rh-map");
     const copyEl = $rh("rhCopyPanel");
     const PARALLAX_FACTOR = 0.35;
     const FADE_SPAN = 0.95; // opacity hits 0 well before the section fully scrolls out
     const EXIT_THRESHOLD = 0.01; // scroll past this and the radar loop/legend/controls stop
+    const stackedLayout = window.matchMedia("(max-width: 900px)");
     let ticking = false;
 
-    const updateHeroScroll = () => {
-      const heroHeight = heroEl.offsetHeight;
-      const progress = Math.min(Math.max(-heroEl.getBoundingClientRect().top / heroHeight, 0), 1);
-      const fade = Math.min(progress / FADE_SPAN, 1);
-      const opacity = String((1 - fade) ** 2);
-      mapEl.style.transform = `translateY(${progress * heroHeight * PARALLAX_FACTOR}px)`;
-      mapEl.style.opacity = opacity;
-      copyEl.style.opacity = opacity;
+    const scrollProgress = (el: HTMLElement) =>
+      Math.min(Math.max(-el.getBoundingClientRect().top / el.offsetHeight, 0), 1);
 
-      const exited = progress > EXIT_THRESHOLD;
+    const updateHeroScroll = () => {
+      copyEl.style.opacity = stackedLayout.matches
+        ? ""
+        : String((1 - Math.min(scrollProgress(copySection) / FADE_SPAN, 1)) ** 2);
+
+      const scopeHeight = rhScope.offsetHeight;
+      const mapProgress = scrollProgress(rhScope);
+      const mapFade = Math.min(mapProgress / FADE_SPAN, 1);
+      mapEl.style.transform = `translateY(${mapProgress * scopeHeight * PARALLAX_FACTOR}px)`;
+      mapEl.style.opacity = String((1 - mapFade) ** 2);
+
+      const exited = mapProgress > EXIT_THRESHOLD;
       if (exited !== radarPlayback.exited) {
         radarPlayback.exited = exited;
         rhScope.classList.toggle("rh-exited", exited);
@@ -1041,6 +1058,7 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
       },
       { passive: true }
     );
+    stackedLayout.addEventListener("change", updateHeroScroll);
     updateHeroScroll();
   }
 
