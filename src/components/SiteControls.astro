@@ -83,7 +83,9 @@ const onHome = route === "";
     position: fixed;
     top: 16px;
     left: 50%;
-    transform: translateX(-50%);
+    /* Centering uses `translate` (not `transform`) so the hide-on-scroll
+       animation below can own `transform` without clobbering it. */
+    translate: -50% 0;
     z-index: 1001;
     display: flex;
     align-items: center;
@@ -94,7 +96,20 @@ const onHome = route === "";
     background: rgba(10, 18, 22, 0.7);
     backdrop-filter: blur(8px);
     box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
-    transition: opacity 0.25s ease;
+    transition:
+      opacity 0.25s ease,
+      transform 0.3s ease;
+  }
+  /* Scroll-direction hide: slides fully above the viewport (own height plus
+     the 16px top offset). Scroll-up or reaching the top brings it back. */
+  .rh-controls--nav-hidden {
+    transform: translateY(calc(-100% - 20px));
+    pointer-events: none;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rh-controls {
+      transition: opacity 0.25s ease;
+    }
   }
   html:not(.dark) .rh-controls {
     --lh-line: #d8dee3;
@@ -268,7 +283,7 @@ const onHome = route === "";
     .rh-controls--map {
       left: auto;
       right: 16px;
-      transform: none;
+      translate: none;
     }
   }
 
@@ -350,6 +365,48 @@ const onHome = route === "";
     });
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") closeMenu();
+    });
+  }
+
+  // Smart hide: capsule slides away on scroll down, returns on any scroll up.
+  const controls = document.querySelector<HTMLElement>(".rh-controls");
+  if (controls) {
+    // Below this the bar never hides — avoids a pointless hide right as the
+    // page starts moving, and guarantees it's visible at the top.
+    const REVEAL_ZONE = 80;
+    // Ignore micro-deltas (trackpad inertia, iOS rubber-banding jitter).
+    const MIN_DELTA = 6;
+    let lastY = window.scrollY;
+    let ticking = false;
+    const onScroll = () => {
+      // Clamp: iOS overscroll reports negative Y, which would read as "up".
+      const y = Math.max(0, window.scrollY);
+      const delta = y - lastY;
+      if (Math.abs(delta) < MIN_DELTA) {
+        ticking = false;
+        return;
+      }
+      // Never hide while the dropdown is open — the user is mid-interaction
+      // and the panel would fly off with the bar.
+      const menuOpen = heroMenu?.classList.contains("rh-menu-open");
+      const hide = delta > 0 && y > REVEAL_ZONE && !menuOpen;
+      controls.classList.toggle("rh-controls--nav-hidden", hide);
+      lastY = y;
+      ticking = false;
+    };
+    window.addEventListener(
+      "scroll",
+      () => {
+        if (!ticking) {
+          ticking = true;
+          requestAnimationFrame(onScroll);
+        }
+      },
+      { passive: true }
+    );
+    // Keyboard users: tabbing into the (hidden) bar reveals it.
+    controls.addEventListener("focusin", () => {
+      controls.classList.remove("rh-controls--nav-hidden");
     });
   }
 </script>
