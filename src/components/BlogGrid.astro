@@ -3,7 +3,7 @@
 // WordPress at build time; shared by both locale routes so they stay in sync.
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveLang, useTranslations } from "../i18n/utils";
-import { getPosts, featuredImage, decodeEntities } from "../lib/wp";
+import { getPosts, postImage, decodeEntities } from "../lib/wp";
 
 const lang = resolveLang(Astro.currentLocale);
 const t = useTranslations(lang);
@@ -22,7 +22,7 @@ const dateFmt = new Intl.DateTimeFormat(lang, {
   ) : (
     <div class="grid gap-gutter md:grid-cols-2 lg:grid-cols-3">
       {posts.map((post) => {
-        const image = featuredImage(post);
+        const image = postImage(post);
         const postHref = getRelativeLocaleUrl(lang, `blog/${post.slug}`);
         return (
           <article class="glass-panel flex flex-col overflow-hidden rounded-lg">

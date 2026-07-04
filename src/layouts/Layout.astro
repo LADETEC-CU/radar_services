@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import SiteControls from "../components/SiteControls.astro";
 import { getAbsoluteLocaleUrl } from "astro:i18n";
 import { resolveLang, useTranslations, getRouteFromPathname, localeList } from "../i18n/utils";
 import { defaultLang, ogLocale } from "../i18n/ui";
@@ -82,6 +83,9 @@ const ogImage = new URL("/og.webp", Astro.site).href;
   >
     <!-- Technical Grid Overlay -->
     <div class="technical-grid pointer-events-none fixed inset-0 z-0"></div>
+
+    <!-- Site-wide fixed controls: nav menu + theme toggle + language switch -->
+    <SiteControls />
 
     <!-- Main Content Slot -->
     <slot />

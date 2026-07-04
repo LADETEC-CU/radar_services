@@ -1,10 +1,15 @@
 ---
 // Footer.astro
+import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveLang, useTranslations } from "../i18n/utils";
 import contact from "../data/contact.json";
 
 const lang = resolveLang(Astro.currentLocale);
 const t = useTranslations(lang);
+
+// Section anchors carry the locale home path so they also work from blog
+// routes; on the home page they resolve to same-page jumps.
+const homeHref = getRelativeLocaleUrl(lang, "");
 
 // Contact data (emails / phones / social URLs) lives in src/data/contact.json.
 // Icons live here in code; add a platform to the JSON to show it (YouTube/X
@@ -24,10 +29,11 @@ const socialIcons: Record<string, string> = {
 };
 
 const navLinks = [
-  { href: "#hardware", label: t("nav.hardware") },
-  { href: "#software", label: t("nav.software") },
-  { href: "#rd", label: t("nav.rd") },
-  { href: "#contact", label: t("nav.contact") },
+  { href: `${homeHref}#hardware`, label: t("nav.hardware") },
+  { href: `${homeHref}#software`, label: t("nav.software") },
+  { href: `${homeHref}#rd`, label: t("nav.rd") },
+  { href: `${homeHref}#contact`, label: t("nav.contact") },
+  { href: getRelativeLocaleUrl(lang, "blog"), label: t("nav.blog") },
 ];
 
 const headingClass =
@@ -44,7 +50,7 @@ const linkClass =
     <div class="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-4">
       <!-- Brand -->
       <div class="space-y-5">
-        <a href="#hero" aria-label="LADETEC" class="flex items-center gap-2">
+        <a href={`${homeHref}#hero`} aria-label="LADETEC" class="flex items-center gap-2">
           <img alt="LADETEC" class="h-6 w-auto" src="/logo.webp" />
           <span
             class="font-technical-label text-technical-label tracking-widest text-outline uppercase"

@@ -60,6 +60,18 @@ export function featuredImage(post: WpPost): { src: string; alt: string } | null
 }
 
 /**
+ * Card image: featured image when set, otherwise the first inline <img> of
+ * the post body — none of the current posts have a featured image in WP,
+ * but all carry inline images.
+ */
+export function postImage(post: WpPost): { src: string; alt: string } | null {
+  const featured = featuredImage(post);
+  if (featured) return featured;
+  const match = post.content.rendered.match(/<img[^>]+src=["']([^"']+)["']/);
+  return match ? { src: match[1], alt: "" } : null;
+}
+
+/**
  * Decode the HTML entities WP leaves in `title.rendered` (&#8217;, &amp;, …)
  * for plain-text sinks (`<title>`, `alt`) where `set:html` is not used.
  */
