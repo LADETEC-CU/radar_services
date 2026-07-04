@@ -17,9 +17,12 @@ const switchHref = getRelativeLocaleUrl(target, route);
 const homeHref = getRelativeLocaleUrl(lang, "");
 const blogHref = getRelativeLocaleUrl(lang, "blog");
 const onBlog = route === "blog" || route.startsWith("blog/");
+// Home renders the split hero (copy | map): center the capsule over the map
+// column. Any other route has no map, so it centers on the viewport.
+const onHome = route === "";
 ---
 
-<div class="rh-controls">
+<div class:list={["rh-controls", { "rh-controls--map": onHome }]}>
   <div class="rh-menu" id="hero-menu">
     <button
       id="hero-menu-toggle"
@@ -42,6 +45,8 @@ const onBlog = route === "blog" || route.startsWith("blog/");
     </nav>
   </div>
 
+  <span class="rh-controls__sep" aria-hidden="true"></span>
+
   <button id="hero-theme-toggle" class="js-theme-toggle rh-theme-toggle" aria-label="Toggle Theme">
     <span class="material-symbols-outlined theme-icon-moon">dark_mode</span>
     <span class="material-symbols-outlined theme-icon-sun">light_mode</span>
@@ -59,9 +64,10 @@ const onBlog = route === "blog" || route.startsWith("blog/");
 </div>
 
 <style is:global>
-  /* Controls (menu + theme toggle + language switch). Fixed to the viewport
-     so they stay visible and usable the whole page down — this is the site's
-     only nav, on every route. */
+  /* Single capsule navbar (nav menu + theme toggle + language switch). Fixed
+     to the viewport so it stays visible and usable the whole page down — this
+     is the site's only nav, on every route. Centered on the viewport by
+     default; .rh-controls--map (home) re-centers it over the hero map column. */
   /* Also the positioned ancestor for .rh-menu-panel — the dropdown right-aligns
      to this group's own right edge, stable regardless of where the menu button
      falls in flex order (it moves via `order` on mobile). */
@@ -76,22 +82,41 @@ const onBlog = route === "blog" || route.startsWith("blog/");
 
     position: fixed;
     top: 16px;
-    right: 16px;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1001;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 4px;
+    padding: 5px 8px;
+    border: 1px solid var(--lh-line);
+    border-radius: 999px;
+    background: rgba(10, 18, 22, 0.7);
+    backdrop-filter: blur(8px);
+    box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
     transition: opacity 0.25s ease;
-    /* Menu/theme/lang have transparent backgrounds on desktop, so whatever
-       scrolls underneath can match their text color — a soft drop shadow
-       keeps icons/labels legible against any page background. */
-    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55));
   }
   html:not(.dark) .rh-controls {
     --lh-line: #d8dee3;
     --lh-text: #1c1f2a;
     --lh-teal: #00898f;
     --lh-teal-dim: rgba(0, 137, 143, 0.12);
+    background: rgba(255, 255, 255, 0.72);
+    box-shadow: 0 2px 14px rgba(15, 23, 32, 0.15);
+  }
+  /* Home, split layout: map column starts after the copy column
+     (minmax(400px, 500px) → 500px on any viewport this query matches), so
+     the map's horizontal center sits at 50vw + 250px. */
+  @media (min-width: 901px) {
+    .rh-controls--map {
+      left: calc(50vw + 250px);
+    }
+  }
+  .rh-controls__sep {
+    width: 1px;
+    height: 18px;
+    background: var(--lh-line);
+    margin: 0 4px;
   }
   .rh-lang {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
@@ -99,29 +124,25 @@ const onBlog = route === "blog" || route.startsWith("blog/");
     font-weight: 600;
     color: var(--lh-text);
     text-decoration: none;
-    border: 1px solid var(--lh-line);
-    background: rgba(10, 18, 22, 0.7);
-    backdrop-filter: blur(6px);
     padding: 0.45rem 0.7rem;
-    border-radius: 4px;
+    border-radius: 999px;
   }
   .rh-lang:hover {
-    border-color: var(--lh-teal);
+    color: var(--lh-teal);
   }
   .rh-theme-toggle {
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--lh-text);
-    border: 1px solid var(--lh-line);
-    background: rgba(10, 18, 22, 0.7);
-    backdrop-filter: blur(6px);
+    background: transparent;
+    border: none;
     padding: 0.45rem;
-    border-radius: 4px;
+    border-radius: 999px;
     cursor: pointer;
   }
   .rh-theme-toggle:hover {
-    border-color: var(--lh-teal);
+    color: var(--lh-teal);
   }
   .rh-theme-toggle .material-symbols-outlined {
     font-size: 1.15rem;
@@ -134,7 +155,7 @@ const onBlog = route === "blog" || route.startsWith("blog/");
     background: transparent;
     border: none;
     padding: 0.45rem;
-    border-radius: 4px;
+    border-radius: 999px;
     cursor: pointer;
   }
   .rh-menu-toggle:hover {
@@ -171,12 +192,13 @@ const onBlog = route === "blog" || route.startsWith("blog/");
       opacity 0.15s ease,
       transform 0.15s ease;
   }
-  html:not(.dark) .rh-lang,
-  html:not(.dark) .rh-theme-toggle {
-    background: rgba(255, 255, 255, 0.72);
-  }
-  html:not(.dark) .rh-menu-panel {
-    background: rgba(255, 255, 255, 0.92);
+  /* Scoped to the collapsed dropdown only — in row mode (≥1100px) the panel
+     must stay transparent inside the capsule, and this selector's specificity
+     would otherwise beat that media-query override. */
+  @media (max-width: 1099px) {
+    html:not(.dark) .rh-menu-panel {
+      background: rgba(255, 255, 255, 0.92);
+    }
   }
   .rh-menu.rh-menu-open .rh-menu-panel {
     opacity: 1;
@@ -203,9 +225,11 @@ const onBlog = route === "blog" || route.startsWith("blog/");
     color: var(--lh-teal);
     background: var(--lh-teal-dim);
   }
-  /* Desktop: nav reads as a plain always-visible bar, like any landing page —
-     no hamburger, no dropdown. Mobile keeps the toggle + collapsible panel. */
-  @media (min-width: 901px) {
+  /* Wide desktop: nav reads as an always-visible link row inside the capsule —
+     no hamburger, no dropdown. The threshold is 1100px (not 900px) because the
+     full row (~520px) only fits over the map column once it is ≥600px wide.
+     Below that, the toggle + collapsible panel take over. */
+  @media (min-width: 1100px) {
     .rh-menu-toggle {
       display: none;
     }
@@ -222,11 +246,29 @@ const onBlog = route === "blog" || route.startsWith("blog/");
       transform: none;
       gap: 4px;
     }
+    .rh-menu-panel a {
+      border-radius: 999px;
+    }
   }
-  @media (max-width: 900px) {
-    /* Mobile: hamburger reads as the rightmost/edge control, not leftmost. */
+  @media (max-width: 1099px) {
+    /* Collapsed nav: hamburger reads as the rightmost/edge control, not leftmost.
+       With the link row gone the separator would lead the capsule — drop it. */
     .rh-menu {
       order: 3;
+    }
+    .rh-controls__sep {
+      display: none;
+    }
+  }
+  @media (max-width: 900px) {
+    /* Stacked hero: the map is a full-width section, so "centered over the
+       map" has no anchor — dock the capsule top-right, clear of the brand
+       sitting top-left of the copy panel. */
+    .rh-controls,
+    .rh-controls--map {
+      left: auto;
+      right: 16px;
+      transform: none;
     }
   }
 

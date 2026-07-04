@@ -291,7 +291,9 @@ const t = useTranslations(lang);
     top: 0;
     left: 0;
     right: 0;
-    padding: 22px calc(clamp(18px, 4vw, 44px) + 84px) 22px clamp(18px, 4vw, 44px);
+    /* Top padding clears the fixed capsule navbar (SiteControls) centered
+       over the map at this same top band. */
+    padding: 74px clamp(18px, 4vw, 44px) 22px;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
@@ -348,8 +350,6 @@ const t = useTranslations(lang);
     font-size: 12.5px;
     color: var(--rh-muted);
     text-align: right;
-    /* Clears the fixed menu/theme/lang cluster sitting at the same top band. */
-    margin-top: 44px;
   }
   .rh-place strong {
     color: var(--rh-text);
@@ -636,14 +636,16 @@ const t = useTranslations(lang);
       height: 70vh;
       min-height: 420px;
     }
+    /* Stacked layout docks the capsule navbar top-right of the viewport, not
+       over the map, so the top HUD doesn't need to drop below it. */
+    .rh-hud--top {
+      padding-top: 22px;
+    }
   }
 
   @media (max-width: 640px) {
     .rh-place {
       display: none;
-    }
-    .rh-hud--top {
-      padding-right: clamp(18px, 4vw, 44px);
     }
     .rh-hud--bottom {
       top: 0;
@@ -741,10 +743,6 @@ const t = useTranslations(lang);
 
     <!-- Top HUD: radar live status + resolved place name -->
     <div class="rh-hud rh-hud--top">
-      <div class="rh-brand">
-        <span class="rh-live-dot"></span>
-        {t("hero.radar.live")} &middot; <span class="rh-brand__name">Radar</span>
-      </div>
       <div class="rh-place">
         {t("hero.radar.over")}
         <strong id="rvPlace">{t("hero.radar.locating")}</strong>
