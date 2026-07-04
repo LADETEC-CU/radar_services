@@ -15,6 +15,7 @@ Repo: `github.com/LADETEC-CU/radar_services` · single-package Astro site, stati
 | Astro        | `^6.4.6`                                                    | 6.4.6       |
 | Tailwind CSS | `^4.3.1`, via `@tailwindcss/vite` (no `tailwind.config.js`) | 4.3.1       |
 | Swiper       | `^12.2.0` (testimonials carousel, web-component build)      | 12.2.0      |
+| Leaflet      | `^1.9.4` (hero live radar map, + `@types/leaflet`)          | 1.9.4       |
 
 - **Package manager is `pnpm`** — do not introduce `npm`/`yarn` lockfiles. Commit `pnpm-lock.yaml`.
 - Use whatever Node version manager you have (`nvm`/`fnm`/`volta`) to select a Node that satisfies `engines`. Do not hardcode another machine's version-manager path into scripts or docs.
@@ -26,6 +27,7 @@ pnpm install      # install deps
 pnpm dev          # dev server → http://localhost:4321
 pnpm build        # production build → ./dist/
 pnpm preview      # serve the built ./dist/ locally
+pnpm deploy       # build + `npx wrangler pages deploy dist` (Cloudflare Pages)
 pnpm astro ...    # CLI, e.g. `pnpm astro check`
 pnpm optimize:images [paths] [--max <px>] [--delete]   # convert raster assets to WebP (see §8)
 
@@ -42,26 +44,35 @@ pnpm verify:full  # same, but also validates external links (slow, flaky)
 
 ```
 src/
-├── layouts/Layout.astro      # <html>/<head>, SEO+i18n head (canonical/hreflang/og), fonts, theme flash, grid overlay, <slot/>
-├── pages/
-│   ├── index.astro           # English route  →  /  (default locale, unprefixed)
+├── layouts/Layout.astro      # <html>/<head>, SEO+i18n head (canonical/hreflang/og), fonts, theme flash, grid overlay, SiteControls, <slot/>
+├── pages/                    # ROUTES ONLY — every file is a thin wrapper over components/pages/ (see below)
+│   ├── index.astro           # English landing  →  /  (default locale, unprefixed)
+│   ├── blog.astro            # English blog index  →  /blog/
+│   ├── blog/[slug].astro     # English blog post  →  /blog/<slug>/
 │   ├── 404.astro             # 404 page redirecting to /
-│   └── es/index.astro        # Spanish route  →  /es/
+│   └── es/                   # Spanish twins  →  /es/, /es/blog/, /es/blog/<slug>/
+├── components/
+│   ├── pages/                # shared page bodies: LandingPage, BlogIndexPage, BlogPostPage
+│   └── *.astro               # section components (see §5)
 ├── i18n/
 │   ├── en.json               # English UI strings (translator-editable)
 │   ├── es.json               # Spanish UI strings (translator-editable)
 │   ├── ui.ts                 # i18n config + types (languages, defaultLang, UIKey, parity guard)
 │   └── utils.ts              # helpers (resolveLang, useTranslations, otherLang, getRouteFromPathname)
-├── components/               # all section components (see §5)
+├── lib/wp.ts                 # WordPress REST helpers for the headless blog (build-time only)
+├── config/blog.ts            # WP base URL + per-locale category slugs + perPage
+├── scripts/                  # client-side TS extracted from big components (hero-radar.ts, site-controls.ts)
 ├── data/
 │   ├── testimonials.en.json  # English testimonial quotes (data-driven)
 │   └── testimonials.es.json  # Spanish testimonial quotes (data-driven)
-└── styles/global.css         # Tailwind import + design tokens + custom classes
+└── styles/                   # global.css (Tailwind + tokens) + per-feature CSS (hero-radar.css, site-controls.css)
 public/                       # static assets (favicon, ... , testimonial avatars as .webp)
 scripts/optimize_images.py    # JPG/PNG → WebP converter (see §8)
 ```
 
-Both page routes import the **same component set** in the same order; they differ only by the route they live on, which sets the active locale (see §3). Keep the two pages in sync — if you add/remove a section, update **both** `index.astro` files.
+**Locale routes are thin wrappers.** Each EN/ES route pair renders the same shared page component from `src/components/pages/` (`LandingPage`, `BlogIndexPage`, `BlogPostPage`); the route only sets the active locale (see §3), and `[slug]` routes additionally export `getStaticPaths = makeBlogPaths("<lang>")` from `lib/wp.ts`. **Never duplicate page markup into a route file** — add/remove sections in the shared component and both locales pick it up.
+
+**File-size rule:** keep files near ~300 lines. When a component grows past that, extract its CSS to `src/styles/<feature>.css` (imported from frontmatter) and its client script to `src/scripts/<feature>.ts` (imported from the component's `<script>`), as Hero and SiteControls already do.
 
 Design tokens & visual rules: see [DESIGN.md](./DESIGN.md).
 
@@ -125,6 +136,8 @@ const testimonialsByLang = { en: enTestimonials, es: esTestimonials };
 const testimonials = testimonialsByLang[lang].map(/* … */);
 ```
 
+Blog posts are also per-locale: `lib/wp.ts` fetches the WordPress category mapped to each locale in `config/blog.ts` (`getPosts(lang)`). Both locales currently point at the same Spanish category — swap the `en` slug in `config/blog.ts` once an English category exists in WordPress.
+
 ### Language switcher
 
 A plain link in `Header.astro`, built with the native `astro:i18n` helper so it points at the _same_ route in the other locale (no JS, no class toggle):
@@ -160,26 +173,30 @@ getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.pathname, lang));
 
 All components resolve the locale via `resolveLang(Astro.currentLocale)` and pull copy through `useTranslations(lang)` → `t('key')` (§3) — no literal strings in markup.
 
-| Component                       | Responsibility                                                                                                                                                                                       |
-| :------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `layouts/Layout.astro`          | `<head>`: locale-aware title/description, canonical + hreflang alternates (+ x-default), Open Graph/Twitter tags, Google Fonts, theme flash script, fixed technical-grid overlay, content `<slot/>`. |
-| `components/Header.astro`       | Fixed header: base64-embedded logo, desktop nav + mobile drawer, theme toggle, language switch link.                                                                                                 |
-| `components/Hero.astro`         | Hero copy, CTAs, mouse-driven coordinate tracker, and the WebGL radar-sweep shader on a `<canvas>`.                                                                                                  |
-| `components/CoreTriad.astro`    | Capability cards (Hardware / Software / R&D) with scan-line animation.                                                                                                                               |
-| `components/Metrics.astro`      | Stat counters and grayscale partner logos.                                                                                                                                                           |
-| `components/TechFocus.astro`    | Specifications list + volumetric radar tablet mock-up (`public/img/example.png`).                                                                                                                    |
-| `components/Testimonials.astro` | Swiper carousel; quotes from `data/testimonials.<lang>.json` (picked by locale); per-quote dynamic font sizing + initials-fallback avatars.                                                          |
-| `components/Contact.astro`      | Consultation form. **Client-only stub** — `onsubmit` calls `preventDefault()` + `alert()`; there is no backend/submission. Wire a real handler before relying on it.                                 |
-| `components/Footer.astro`       | Footer.                                                                                                                                                                                              |
+| Component                       | Responsibility                                                                                                                                                                                                                                                          |
+| :------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `layouts/Layout.astro`          | `<head>`: locale-aware title/description, canonical + hreflang alternates (+ x-default), Open Graph/Twitter tags, Google Fonts, theme flash script, fixed technical-grid overlay, `<SiteControls/>`, content `<slot/>`, shared theme-toggle script.                     |
+| `components/SiteControls.astro` | Site-wide floating capsule navbar: nav menu (dropdown / link row), theme toggle, language switch. Rendered from `Layout` on every route. Scroll-spy + smart hide-on-scroll in `scripts/site-controls.ts`; styles in `styles/site-controls.css`.                         |
+| `components/Hero.astro`         | Split hero: copy column (eyebrow, headline, chips, CTAs, proof stats) + **live radar map** — Leaflet base tiles (CARTO), IP geolocation, RainViewer past-frames playback with scrubbable timeline. Logic in `scripts/hero-radar.ts`; styles in `styles/hero-radar.css`. |
+| `components/CoreTriad.astro`    | Capability cards (Hardware / Software / R&D) with scan-line animation.                                                                                                                                                                                                  |
+| `components/Metrics.astro`      | Stat counters and grayscale partner logos.                                                                                                                                                                                                                              |
+| `components/TechFocus.astro`    | Specifications list + volumetric radar tablet mock-up (`public/img/example.png`).                                                                                                                                                                                       |
+| `components/Testimonials.astro` | Swiper carousel; quotes from `data/testimonials.<lang>.json` (picked by locale); per-quote dynamic font sizing + initials-fallback avatars.                                                                                                                             |
+| `components/Contact.astro`      | Consultation form. **Client-only stub** — `onsubmit` calls `preventDefault()` + `alert()`; there is no backend/submission. Wire a real handler before relying on it.                                                                                                    |
+| `components/Footer.astro`       | Footer.                                                                                                                                                                                                                                                                 |
+| `components/BlogGrid.astro`     | Blog index card grid; posts from `lib/wp.ts` (`getPosts(lang)`), card image via `postImage()`, empty state when WP is unreachable.                                                                                                                                      |
+| `components/BlogPost.astro`     | Single post: title, date, featured/inline image, WP-rendered HTML body via `set:html`.                                                                                                                                                                                  |
+| `components/pages/*.astro`      | Shared page bodies (`LandingPage`, `BlogIndexPage`, `BlogPostPage`) rendered by the thin locale routes (§2).                                                                                                                                                            |
 
 ---
 
 ## 6. Known Stubs & Gotchas
 
 - **Contact form has no backend.** It only shows an alert. Treat as a placeholder.
-- **Header logo is a large base64 PNG** inlined in the component — bloats the file; consider moving to `public/` if it grows further.
+- **Blog fetches WordPress at BUILD time only** (static output). A WP/network failure logs a warning and ships an **empty blog** — the build still goes green. Publishing in WP requires a site rebuild to show up. Config: `src/config/blog.ts`.
+- **The hero calls external APIs at RUNTIME**: `ipwho.is` → `ipapi.co` (IP geolocation, sequential fallback), `api.rainviewer.com` (radar frames), CARTO tile CDN. All degrade gracefully (fallback view / "no data" notice), but a visitor's IP is sent to third parties — keep this in mind for privacy/GDPR review.
 - **Swiper** uses the web-component build (`swiper-container`/`swiper-slide`) registered client-side; it's initialized with `init="false"` then configured in a `<script>`. Keep that init pattern if editing.
-- The **two page routes must stay in sync** (§2).
+- **Locale route pairs are thin wrappers** over `components/pages/` (§2) — never fork page markup per locale.
 - **No unit-test suite** currently. Run the **`pnpm verify` gate** (§7) plus a manual pass over both `/` and `/es/`, light and dark. The gate already runs `astro check` (type errors + the i18n key-parity guard — a key in `en.json` missing from `es.json` fails here, not at build) and a link crawl.
 - **`site` in `astro.config.mjs` must be the real production domain** — canonical, hreflang, and `og:url`/`og:image` are built from it. A wrong value ships wrong SEO URLs even though the build passes. `@astrojs/sitemap` also reads `site`, so a wrong value ships a wrong `sitemap-index.xml`.
 

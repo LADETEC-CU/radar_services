@@ -1,0 +1,20 @@
+---
+// Shared blog post body. Each locale route (pages/blog/[slug].astro,
+// pages/es/blog/[slug].astro) exports `getStaticPaths` via makeBlogPaths()
+// and forwards the resolved post here.
+import Layout from "../../layouts/Layout.astro";
+import Footer from "../Footer.astro";
+import BlogPost from "../BlogPost.astro";
+import { decodeEntities, type WpPost } from "../../lib/wp";
+
+interface Props {
+  post: WpPost;
+}
+
+const { post } = Astro.props;
+---
+
+<Layout title={`${decodeEntities(post.title.rendered)} | LADETEC`}>
+  <BlogPost post={post} />
+  <Footer />
+</Layout>

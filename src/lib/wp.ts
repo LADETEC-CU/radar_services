@@ -52,6 +52,19 @@ export async function getPosts(lang: Lang, perPage: number = WP_CONFIG.perPage):
   return posts ?? [];
 }
 
+/**
+ * `getStaticPaths` factory for the per-locale blog post routes
+ * (`pages/blog/[slug].astro`, `pages/es/blog/[slug].astro`): one path per
+ * post of the locale's category, with the post itself passed as a prop.
+ * 100 is the WP REST per_page cap; add pagination if the category outgrows it.
+ */
+export function makeBlogPaths(lang: Lang) {
+  return async () => {
+    const posts = await getPosts(lang, 100);
+    return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+  };
+}
+
 /** Featured image of a post (via `_embed`), or null when it has none. */
 export function featuredImage(post: WpPost): { src: string; alt: string } | null {
   const media = post._embedded?.["wp:featuredmedia"]?.[0];

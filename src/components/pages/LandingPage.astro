@@ -1,0 +1,25 @@
+---
+// Shared landing page body. Each locale route (pages/index.astro,
+// pages/es/index.astro) is a thin wrapper around this component — the active
+// locale comes from the route via Astro.currentLocale, so no props needed.
+import Layout from "../../layouts/Layout.astro";
+import Hero from "../Hero.astro";
+import CoreTriad from "../CoreTriad.astro";
+import Metrics from "../Metrics.astro";
+import TechFocus from "../TechFocus.astro";
+import Testimonials from "../Testimonials.astro";
+import Contact from "../Contact.astro";
+import Footer from "../Footer.astro";
+---
+
+<Layout>
+  <main class="relative z-10">
+    <Hero />
+    <CoreTriad />
+    <Metrics />
+    <TechFocus />
+    <Testimonials />
+    <Contact />
+  </main>
+  <Footer />
+</Layout>

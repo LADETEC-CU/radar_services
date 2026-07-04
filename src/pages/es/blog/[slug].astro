@@ -1,14 +1,8 @@
 ---
-import Layout from "../../../layouts/Layout.astro";
-import Footer from "../../../components/Footer.astro";
-import BlogPost from "../../../components/BlogPost.astro";
-import { getPosts, decodeEntities, type WpPost } from "../../../lib/wp";
+import BlogPostPage from "../../../components/pages/BlogPostPage.astro";
+import { makeBlogPaths, type WpPost } from "../../../lib/wp";
 
-export async function getStaticPaths() {
-  // 100 is the WP REST per_page cap; add pagination here if the category outgrows it.
-  const posts = await getPosts("es", 100);
-  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
-}
+export const getStaticPaths = makeBlogPaths("es");
 
 interface Props {
   post: WpPost;
@@ -17,7 +11,4 @@ interface Props {
 const { post } = Astro.props;
 ---
 
-<Layout title={`${decodeEntities(post.title.rendered)} | LADETEC`}>
-  <BlogPost post={post} />
-  <Footer />
-</Layout>
+<BlogPostPage post={post} />

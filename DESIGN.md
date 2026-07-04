@@ -45,10 +45,14 @@ Also available (dark/light pairs in `global.css`): `surface-dim`, `surface-brigh
 
 ## 3. Typography
 
-Two families, loaded from Google Fonts in `Layout.astro`:
+Loaded from Google Fonts in `Layout.astro`:
 
 - **Inter** — body, display, headline (`--font-sans`, `--font-body-lg`, `--font-display-lg`, `--font-headline-md`).
-- **JetBrains Mono** — technical labels and code-like UI (`--font-mono`, `--font-technical-label`).
+- **JetBrains Mono** — technical labels and code-like UI (`--font-mono`, `--font-technical-label`), plus the hero map HUD (legend, timeline, attribution).
+- **Archivo** (variable, `wdth`/`wght`) — hero headline and proof stats.
+- **IBM Plex Sans / IBM Plex Mono** — hero copy column: lede/proof labels (Sans) and eyebrow/chips/CTAs/brand plus the capsule navbar (Mono).
+
+Inter + JetBrains Mono carry the site sections (tokens in `global.css`); the Archivo/IBM Plex trio is scoped to the hero and capsule navbar (`hero-radar.css`, `site-controls.css`).
 
 Type scale (utility ⇒ size / line-height / weight):
 
@@ -90,7 +94,10 @@ Defined in `global.css`, used across components:
 - **`.material-symbols-outlined`** — variable-font settings for Material Symbols icons (`wght 200`).
 - **`.active-tab`** — cyan bottom-border + text for active tab state.
 
-The **Hero** additionally renders a bespoke **WebGL fragment shader** (radar sweep + simplex-noise storm cells + grid + vignette) on a `<canvas>`, reacting to `u_time`/`u_mouse`. It degrades gracefully (returns early if WebGL is unavailable). See [`Hero.astro`](./src/components/Hero.astro).
+Two features carry their own global stylesheets (imported from their components, prefixed `rh-`/`lh-`, with their own light/dark palette vars mirroring the site tokens):
+
+- **Hero radar map** ([`Hero.astro`](./src/components/Hero.astro), [`src/styles/hero-radar.css`](./src/styles/hero-radar.css)) — a **live Leaflet map** (CARTO tiles retinted via an SVG color-matrix filter, RainViewer precipitation frames) with an instrument HUD: intensity legend, scrubbable playback timeline, pulsing location pin, place readout. It degrades gracefully (fallback center, "no data" notice) and pauses/fades on scroll-out.
+- **Capsule navbar** ([`SiteControls.astro`](./src/components/SiteControls.astro), [`src/styles/site-controls.css`](./src/styles/site-controls.css)) — the site's only nav on every route: fixed pill with nav menu, theme toggle and language switch; hides on scroll-down, returns on scroll-up.
 
 ---
 
@@ -100,7 +107,7 @@ The product is sovereign weather-radar engineering; the design language is **a r
 
 - Dark obsidian field, cyan instrument glow, occasional neon-green telemetry.
 - Monospace technical labels everywhere readouts would appear.
-- Live, reactive motifs: the Hero shader, the mouse-driven coordinate tracker, scan lines, the pulsing "system status" dot.
+- Live, reactive motifs: the hero's real-time radar map and playback timeline, scan lines, the pulsing location pin and "system status" dot.
 - Glass panels and thin grid lines over depth blur — precision instrumentation, not marketing gloss.
 
 When adding UI, ask: _would this look at home on a radar control surface?_ Prefer tokens and the classes above over inventing new visual primitives.

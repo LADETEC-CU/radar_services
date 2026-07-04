@@ -1,0 +1,235 @@
+/* Site-wide fixed control capsule (SiteControls.astro) styles. Global by
+   design: the bar renders outside any component scope and shares the hero
+   palette vars. Runtime logic lives in src/scripts/site-controls.ts. */
+
+/* Single capsule navbar (nav menu + theme toggle + language switch). Fixed
+   to the viewport so it stays visible and usable the whole page down — this
+   is the site's only nav, on every route. Centered on the viewport by
+   default; .rh-controls--map (home) re-centers it over the hero map column. */
+/* Also the positioned ancestor for .rh-menu-panel — the dropdown right-aligns
+   to this group's own right edge, stable regardless of where the menu button
+   falls in flex order (it moves via `order` on mobile). */
+.rh-controls {
+  /* Own copy of the hero palette vars — this bar renders outside
+     .radar-hero (where they were originally defined). Dark defaults;
+     light overrides below. */
+  --lh-line: #1d2b32;
+  --lh-text: #ebf1f3;
+  --lh-teal: #2fe6c3;
+  --lh-teal-dim: rgba(47, 230, 195, 0.14);
+
+  position: fixed;
+  top: 16px;
+  left: 50%;
+  /* Centering uses `translate` (not `transform`) so the hide-on-scroll
+     animation below can own `transform` without clobbering it. */
+  translate: -50% 0;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 8px;
+  border: 1px solid var(--lh-line);
+  border-radius: 999px;
+  background: rgba(10, 18, 22, 0.7);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35);
+  transition:
+    opacity 0.25s ease,
+    transform 0.3s ease;
+}
+/* Scroll-direction hide: slides fully above the viewport (own height plus
+   the 16px top offset). Scroll-up or reaching the top brings it back. */
+.rh-controls--nav-hidden {
+  transform: translateY(calc(-100% - 20px));
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .rh-controls {
+    transition: opacity 0.25s ease;
+  }
+}
+html:not(.dark) .rh-controls {
+  --lh-line: #d8dee3;
+  --lh-text: #1c1f2a;
+  --lh-teal: #00898f;
+  --lh-teal-dim: rgba(0, 137, 143, 0.12);
+  background: rgba(255, 255, 255, 0.72);
+  box-shadow: 0 2px 14px rgba(15, 23, 32, 0.15);
+}
+/* Home, split layout: map column starts after the copy column
+   (minmax(400px, 500px) → 500px on any viewport this query matches), so
+   the map's horizontal center sits at 50vw + 250px. */
+@media (min-width: 901px) {
+  .rh-controls--map {
+    left: calc(50vw + 250px);
+  }
+}
+.rh-controls__sep {
+  width: 1px;
+  height: 18px;
+  background: var(--lh-line);
+  margin: 0 4px;
+}
+.rh-lang {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--lh-text);
+  text-decoration: none;
+  padding: 0.45rem 0.7rem;
+  border-radius: 999px;
+}
+.rh-lang:hover {
+  color: var(--lh-teal);
+}
+.rh-theme-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--lh-text);
+  background: transparent;
+  border: none;
+  padding: 0.45rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.rh-theme-toggle:hover {
+  color: var(--lh-teal);
+}
+.rh-theme-toggle .material-symbols-outlined {
+  font-size: 1.15rem;
+}
+.rh-menu-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--lh-text);
+  background: transparent;
+  border: none;
+  padding: 0.45rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.rh-menu-toggle:hover {
+  color: var(--lh-teal);
+}
+.rh-menu-toggle .material-symbols-outlined {
+  font-size: 1.15rem;
+}
+.rh-menu-toggle .menu-icon-close,
+.rh-menu.rh-menu-open .rh-menu-toggle .menu-icon-open {
+  display: none;
+}
+.rh-menu.rh-menu-open .rh-menu-toggle .menu-icon-close {
+  display: inline-block;
+}
+
+.rh-menu-panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 1002;
+  display: flex;
+  flex-direction: column;
+  min-width: 180px;
+  border: 1px solid var(--lh-line);
+  background: rgba(10, 18, 22, 0.92);
+  backdrop-filter: blur(6px);
+  border-radius: 4px;
+  padding: 0.4rem;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
+}
+/* Scoped to the collapsed dropdown only — in row mode (≥1100px) the panel
+   must stay transparent inside the capsule, and this selector's specificity
+   would otherwise beat that media-query override. */
+@media (max-width: 1099px) {
+  html:not(.dark) .rh-menu-panel {
+    background: rgba(255, 255, 255, 0.92);
+  }
+}
+.rh-menu.rh-menu-open .rh-menu-panel {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+.rh-menu-panel a {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--lh-text);
+  text-decoration: none;
+  padding: 0.5rem 0.6rem;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+.rh-menu-panel a:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--lh-teal);
+}
+/* Highlights the link for the section currently in view (scroll-spy driven,
+   see src/scripts/site-controls.ts) or, server-rendered, the blog routes. */
+.rh-menu-panel a.is-active {
+  color: var(--lh-teal);
+  background: var(--lh-teal-dim);
+}
+/* Wide desktop: nav reads as an always-visible link row inside the capsule —
+   no hamburger, no dropdown. The threshold is 1100px (not 900px) because the
+   full row (~520px) only fits over the map column once it is ≥600px wide.
+   Below that, the toggle + collapsible panel take over. */
+@media (min-width: 1100px) {
+  .rh-menu-toggle {
+    display: none;
+  }
+  .rh-menu-panel {
+    position: static;
+    flex-direction: row;
+    min-width: max-content;
+    border: none;
+    background: transparent;
+    backdrop-filter: none;
+    padding: 0;
+    opacity: 1;
+    pointer-events: auto;
+    transform: none;
+    gap: 4px;
+  }
+  .rh-menu-panel a {
+    border-radius: 999px;
+  }
+}
+@media (max-width: 1099px) {
+  /* Collapsed nav: hamburger reads as the rightmost/edge control, not leftmost.
+     With the link row gone the separator would lead the capsule — drop it. */
+  .rh-menu {
+    order: 3;
+  }
+  .rh-controls__sep {
+    display: none;
+  }
+}
+@media (max-width: 900px) {
+  /* Stacked hero: the map is a full-width section, so "centered over the
+     map" has no anchor — dock the capsule top-right, clear of the brand
+     sitting top-left of the copy panel. */
+  .rh-controls,
+  .rh-controls--map {
+    left: auto;
+    right: 16px;
+    translate: none;
+  }
+}
+
+.rh-lang:focus-visible,
+.rh-theme-toggle:focus-visible,
+.rh-menu-toggle:focus-visible,
+.rh-menu-panel a:focus-visible {
+  outline: 2px solid var(--lh-teal);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
