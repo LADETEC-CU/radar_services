@@ -914,7 +914,11 @@ const blogHref = getRelativeLocaleUrl(lang, "blog");
       </nav>
     </div>
 
-    <button id="hero-theme-toggle" class="js-theme-toggle rh-theme-toggle" aria-label="Toggle Theme">
+    <button
+      id="hero-theme-toggle"
+      class="js-theme-toggle rh-theme-toggle"
+      aria-label="Toggle Theme"
+    >
       <span class="material-symbols-outlined theme-icon-moon">dark_mode</span>
       <span class="material-symbols-outlined theme-icon-sun">light_mode</span>
     </button>
@@ -931,7 +935,6 @@ const blogHref = getRelativeLocaleUrl(lang, "blog");
   </div>
 
   <div class="rh-scope" aria-label={t("hero.radar.aria")}>
-
     <!-- Retints the base tile's flat grays (land + water share one raster
          color in this tileset) to the scope's navy so land/water read as one
          continuous surface instead of a mismatched gray plate. -->

@@ -93,5 +93,9 @@
   "footer.spec": "PRECISION SPECIFICATION V4.2 | ENCRYPTION ACTIVE",
 
   "blog.title": "Blog",
-  "blog.body": "Technical notes and updates are coming soon."
+  "blog.eyebrow": "Hurricanes & Radars",
+  "blog.heading": "Featured Articles",
+  "blog.empty": "No articles found.",
+  "blog.readMore": "Read more",
+  "blog.back": "Back to blog"
 }

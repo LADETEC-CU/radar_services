@@ -1,0 +1,79 @@
+---
+// Post-card grid for the blog index. Fetches the locale's category posts from
+// WordPress at build time; shared by both locale routes so they stay in sync.
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { resolveLang, useTranslations } from "../i18n/utils";
+import { getPosts, featuredImage, decodeEntities } from "../lib/wp";
+
+const lang = resolveLang(Astro.currentLocale);
+const t = useTranslations(lang);
+
+const posts = await getPosts(lang);
+const dateFmt = new Intl.DateTimeFormat(lang, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+{
+  posts.length === 0 ? (
+    <p class="text-center font-body-lg text-on-surface-variant">{t("blog.empty")}</p>
+  ) : (
+    <div class="grid gap-gutter md:grid-cols-2 lg:grid-cols-3">
+      {posts.map((post) => {
+        const image = featuredImage(post);
+        const postHref = getRelativeLocaleUrl(lang, `blog/${post.slug}`);
+        return (
+          <article class="glass-panel flex flex-col overflow-hidden rounded-lg">
+            {image && (
+              <a href={postHref} tabindex="-1" aria-hidden="true">
+                <img
+                  src={image.src}
+                  alt={image.alt || decodeEntities(post.title.rendered)}
+                  loading="lazy"
+                  class="h-48 w-full object-cover"
+                />
+              </a>
+            )}
+            <div class="flex grow flex-col p-6">
+              <time
+                datetime={post.date}
+                class="font-technical-label text-technical-label tracking-widest text-outline uppercase"
+              >
+                {dateFmt.format(new Date(post.date))}
+              </time>
+              <h2 class="mt-3 font-body-lg leading-snug font-semibold text-on-surface">
+                <a
+                  href={postHref}
+                  class="transition-colors hover:text-primary-container"
+                  set:html={post.title.rendered}
+                />
+              </h2>
+              <div
+                class="blog-excerpt mt-3 grow text-body-sm text-on-surface-variant"
+                set:html={post.excerpt.rendered}
+              />
+              <a
+                href={postHref}
+                class="mt-4 inline-block font-technical-label text-technical-label tracking-widest text-primary-container uppercase transition-opacity hover:opacity-70"
+              >
+                {t("blog.readMore")} →
+              </a>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+  )
+}
+
+<style>
+  /* WP excerpt HTML is injected via set:html, so its tags need :global(). */
+  .blog-excerpt :global(p) {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 3;
+    overflow: hidden;
+  }
+</style>

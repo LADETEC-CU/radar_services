@@ -1,0 +1,106 @@
+---
+// Single-post article body, shared by both locale [slug] routes.
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { resolveLang, useTranslations } from "../i18n/utils";
+import { featuredImage, decodeEntities, type WpPost } from "../lib/wp";
+
+interface Props {
+  post: WpPost;
+}
+
+const { post } = Astro.props;
+const lang = resolveLang(Astro.currentLocale);
+const t = useTranslations(lang);
+const blogHref = getRelativeLocaleUrl(lang, "blog");
+const image = featuredImage(post);
+const dateFmt = new Intl.DateTimeFormat(lang, {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<main class="relative z-10 min-h-screen">
+  <article class="container mx-auto max-w-3xl px-margin-mobile py-24">
+    <a
+      href={blogHref}
+      class="font-technical-label text-technical-label tracking-widest text-outline uppercase transition-colors hover:text-primary-container"
+    >
+      ← {t("blog.back")}
+    </a>
+    <time
+      datetime={post.date}
+      class="mt-10 block font-technical-label text-technical-label tracking-widest text-primary-container uppercase"
+    >
+      {dateFmt.format(new Date(post.date))}
+    </time>
+    <h1
+      class="mt-3 text-headline-md leading-tight text-on-background"
+      set:html={post.title.rendered}
+    />
+    {
+      image && (
+        <img
+          src={image.src}
+          alt={image.alt || decodeEntities(post.title.rendered)}
+          class="mt-8 w-full rounded-lg object-cover"
+        />
+      )
+    }
+    <div class="wp-content mt-8 font-body-lg text-on-surface" set:html={post.content.rendered} />
+  </article>
+</main>
+
+<style>
+  /* WordPress block HTML arrives via set:html, outside Astro's scoping —
+     every selector needs :global(). Colors come from the theme tokens. */
+  .wp-content :global(p),
+  .wp-content :global(ul),
+  .wp-content :global(ol),
+  .wp-content :global(figure) {
+    margin-block: 1.25rem;
+  }
+  .wp-content :global(h2),
+  .wp-content :global(h3),
+  .wp-content :global(h4) {
+    margin-block: 2rem 1rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: var(--color-on-background);
+  }
+  .wp-content :global(h2) {
+    font-size: 1.5rem;
+  }
+  .wp-content :global(h3) {
+    font-size: 1.25rem;
+  }
+  .wp-content :global(a) {
+    color: var(--color-primary-container);
+    text-decoration: underline;
+  }
+  .wp-content :global(img) {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg, 0.5rem);
+  }
+  .wp-content :global(ul),
+  .wp-content :global(ol) {
+    padding-inline-start: 1.5rem;
+  }
+  .wp-content :global(ul) {
+    list-style: disc;
+  }
+  .wp-content :global(ol) {
+    list-style: decimal;
+  }
+  .wp-content :global(blockquote) {
+    margin-block: 1.5rem;
+    padding-inline-start: 1rem;
+    border-inline-start: 2px solid var(--color-primary-container);
+    color: var(--color-on-surface-variant);
+  }
+  .wp-content :global(figcaption) {
+    font-size: 0.875rem;
+    color: var(--color-on-surface-variant);
+  }
+</style>

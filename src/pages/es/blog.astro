@@ -2,6 +2,7 @@
 import { getRelativeLocaleUrl } from "astro:i18n";
 import Layout from "../../layouts/Layout.astro";
 import Footer from "../../components/Footer.astro";
+import BlogGrid from "../../components/BlogGrid.astro";
 import { resolveLang, useTranslations } from "../../i18n/utils";
 
 const lang = resolveLang(Astro.currentLocale);
@@ -9,21 +10,24 @@ const t = useTranslations(lang);
 const homeHref = getRelativeLocaleUrl(lang, "");
 ---
 
-<Layout title={t("blog.title")}>
-  <main class="relative z-10 flex min-h-screen items-center">
-    <div class="container mx-auto max-w-container-max px-margin-mobile py-32 text-center">
-      <h1
-        class="font-display-lg text-display-lg-mobile leading-tight text-on-background md:text-headline-md"
-      >
-        {t("blog.title")}
-      </h1>
-      <p class="mt-4 font-body-lg text-on-surface-variant">{t("blog.body")}</p>
+<Layout title={`${t("blog.title")} | LADETEC`}>
+  <main class="relative z-10 min-h-screen">
+    <div class="container mx-auto max-w-container-max px-margin-mobile py-24">
       <a
         href={homeHref}
-        class="mt-8 inline-block font-technical-label text-technical-label text-outline uppercase transition-colors hover:text-primary-container"
+        class="font-technical-label text-technical-label tracking-widest text-outline uppercase transition-colors hover:text-primary-container"
       >
-        {t("nav.home")}
+        ← {t("nav.home")}
       </a>
+      <p
+        class="mt-10 font-technical-label text-technical-label tracking-widest text-primary-container uppercase"
+      >
+        {t("blog.eyebrow")}
+      </p>
+      <h1 class="mt-2 text-headline-md text-on-background">{t("blog.heading")}</h1>
+      <div class="mt-12">
+        <BlogGrid />
+      </div>
     </div>
   </main>
   <Footer />

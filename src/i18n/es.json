@@ -93,5 +93,9 @@
   "footer.spec": "ESPECIFICACIÓN DE PRECISIÓN V4.2 | ENCRIPTACIÓN ACTIVA",
 
   "blog.title": "Blog",
-  "blog.body": "Notas técnicas y novedades próximamente."
+  "blog.eyebrow": "Huracanes y Radares",
+  "blog.heading": "Artículos Destacados",
+  "blog.empty": "No se encontraron artículos.",
+  "blog.readMore": "Leer más",
+  "blog.back": "Volver al blog"
 }
