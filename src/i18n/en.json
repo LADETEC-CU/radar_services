@@ -2,11 +2,14 @@
   "site.title": "LADETEC | Atmospheric Precision Engineering",
   "site.description": "Next-Gen Weather Radar Engineering. Decades of Proven Expertise in atmospheric and environmental monitoring radar systems.",
 
+  "nav.home": "Home",
   "nav.hardware": "Hardware",
   "nav.software": "Software",
   "nav.rd": "R&D",
   "nav.contact": "Consultation",
+  "nav.blog": "Blog",
   "nav.switchLabel": "Switch language",
+  "nav.menuLabel": "Open menu",
 
   "hero.eyebrow": "Open Technology for Climate Resilience",
   "hero.title.lead": "Sovereign weather radar.",
@@ -87,5 +90,8 @@
   "footer.privacy": "Privacy Protocol",
   "footer.terminal": "Terminal Login",
   "footer.copyright": "© 2024 LADETEC WEATHER SYSTEMS. ALL RIGHTS RESERVED.",
-  "footer.spec": "PRECISION SPECIFICATION V4.2 | ENCRYPTION ACTIVE"
+  "footer.spec": "PRECISION SPECIFICATION V4.2 | ENCRYPTION ACTIVE",
+
+  "blog.title": "Blog",
+  "blog.body": "Technical notes and updates are coming soon."
 }

@@ -2,11 +2,14 @@
   "site.title": "LADETEC | Ingeniería de Precisión Atmosférica",
   "site.description": "Ingeniería de radares meteorológicos soberana. Décadas de experiencia comprobada en sistemas de monitoreo de radares atmosféricos y ambientales.",
 
+  "nav.home": "Inicio",
   "nav.hardware": "Hardware",
   "nav.software": "Software",
   "nav.rd": "I+D",
   "nav.contact": "Consulta",
+  "nav.blog": "Blog",
   "nav.switchLabel": "Cambiar idioma",
+  "nav.menuLabel": "Abrir menú",
 
   "hero.eyebrow": "tecnología abierta para la resiliencia climática",
   "hero.title.lead": "Radar meteorológico soberano.",
@@ -87,5 +90,8 @@
   "footer.privacy": "Protocolo de Privacidad",
   "footer.terminal": "Inicio de Sesión de Terminal",
   "footer.copyright": "© 2024 SISTEMAS METEOROLÓGICOS LADETEC. TODOS LOS DERECHOS RESERVADOS.",
-  "footer.spec": "ESPECIFICACIÓN DE PRECISIÓN V4.2 | ENCRIPTACIÓN ACTIVA"
+  "footer.spec": "ESPECIFICACIÓN DE PRECISIÓN V4.2 | ENCRIPTACIÓN ACTIVA",
+
+  "blog.title": "Blog",
+  "blog.body": "Notas técnicas y novedades próximamente."
 }

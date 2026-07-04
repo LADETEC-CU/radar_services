@@ -8,6 +8,7 @@ const t = useTranslations(lang);
 
 const target = otherLang(lang);
 const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.pathname, lang));
+const blogHref = getRelativeLocaleUrl(lang, "blog");
 ---
 
 <style is:global>
@@ -277,17 +278,23 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   }
 
   /* Scroll-out: legend + playback controls disappear, radar loop is stopped
-     via JS (below) instead of just fading — no point animating hidden tiles. */
+     via JS (below) instead of just fading — no point animating hidden tiles.
+     .rh-controls (menu + theme + lang) is excluded: those act as the site's
+     only nav/controls and must stay visible/usable the whole page down. */
   .rh-scope.rh-exited .rh-legend,
-  .rh-scope.rh-exited .rh-controls,
   .rh-scope.rh-exited .rh-timeline {
     opacity: 0;
     pointer-events: none;
   }
 
-  /* Controls (theme toggle + language switch), floating over the map */
+  /* Controls (menu + theme toggle + language switch). Fixed to the viewport
+     (not the hero/map) so they stay visible and usable the whole page down —
+     this is the site's only nav, not just a hero decoration. */
+  /* Also the positioned ancestor for .rh-menu-panel — the dropdown right-aligns
+     to this group's own right edge, stable regardless of where the menu button
+     falls in flex order (it moves via `order` on mobile). */
   .rh-controls {
-    position: absolute;
+    position: fixed;
     top: 16px;
     right: 16px;
     z-index: 1001;
@@ -295,6 +302,10 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     align-items: center;
     gap: 8px;
     transition: opacity 0.25s ease;
+    /* Menu/theme/lang have transparent backgrounds on desktop, so whatever
+       scrolls underneath can match their text color — a soft drop shadow
+       keeps icons/labels legible against any page background. */
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.55));
   }
   .rh-lang {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
@@ -328,6 +339,90 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   }
   .rh-theme-toggle .material-symbols-outlined {
     font-size: 1.15rem;
+  }
+  .rh-menu-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--lh-text);
+    background: transparent;
+    border: none;
+    padding: 0.45rem;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .rh-menu-toggle:hover {
+    color: var(--lh-teal);
+  }
+  .rh-menu-toggle .material-symbols-outlined {
+    font-size: 1.15rem;
+  }
+  .rh-menu-toggle .menu-icon-close,
+  .rh-menu.rh-menu-open .rh-menu-toggle .menu-icon-open {
+    display: none;
+  }
+  .rh-menu.rh-menu-open .rh-menu-toggle .menu-icon-close {
+    display: inline-block;
+  }
+
+  .rh-menu-panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 1002;
+    display: flex;
+    flex-direction: column;
+    min-width: 180px;
+    border: 1px solid var(--lh-line);
+    background: rgba(10, 18, 22, 0.92);
+    backdrop-filter: blur(6px);
+    border-radius: 4px;
+    padding: 0.4rem;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(-4px);
+    transition:
+      opacity 0.15s ease,
+      transform 0.15s ease;
+  }
+  .rh-menu.rh-menu-open .rh-menu-panel {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateY(0);
+  }
+  .rh-menu-panel a {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--lh-text);
+    text-decoration: none;
+    padding: 0.5rem 0.6rem;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .rh-menu-panel a:hover {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--lh-teal);
+  }
+  /* Desktop: nav reads as a plain always-visible bar, like any landing page —
+     no hamburger, no dropdown. Mobile keeps the toggle + collapsible panel. */
+  @media (min-width: 901px) {
+    .rh-menu-toggle {
+      display: none;
+    }
+    .rh-menu-panel {
+      position: static;
+      flex-direction: row;
+      min-width: max-content;
+      border: none;
+      background: transparent;
+      backdrop-filter: none;
+      padding: 0;
+      opacity: 1;
+      pointer-events: auto;
+      transform: none;
+      gap: 4px;
+    }
   }
 
   /* HUD layers */
@@ -397,6 +492,8 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     font-size: 12.5px;
     color: var(--rh-muted);
     text-align: right;
+    /* Clears the fixed menu/theme/lang cluster sitting at the same top band. */
+    margin-top: 44px;
   }
   .rh-place strong {
     color: var(--rh-text);
@@ -654,6 +751,9 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   html:not(.dark) .rh-theme-toggle {
     background: rgba(255, 255, 255, 0.72);
   }
+  html:not(.dark) .rh-menu-panel {
+    background: rgba(255, 255, 255, 0.92);
+  }
   html:not(.dark) .rh-timeline__track {
     background: rgba(15, 23, 32, 0.14);
   }
@@ -687,8 +787,9 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
       height: 70vh;
       min-height: 420px;
     }
-    .rh-controls {
-      position: fixed;
+    /* Mobile: hamburger reads as the rightmost/edge control, not leftmost. */
+    .rh-menu {
+      order: 3;
     }
   }
 
@@ -732,6 +833,8 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
   .rh-copy-brand:focus-visible,
   .rh-lang:focus-visible,
   .rh-theme-toggle:focus-visible,
+  .rh-menu-toggle:focus-visible,
+  .rh-menu-panel a:focus-visible,
   .rh-cta-primary:focus-visible,
   .rh-cta-secondary:focus-visible,
   .rh-timeline__track:focus-visible {
@@ -777,27 +880,51 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     </div>
   </div>
 
-  <div class="rh-scope" aria-label={t("hero.radar.aria")}>
-    <div class="rh-controls">
+  <!-- Lives outside .rh-scope on purpose: .rh-scope has `isolation: isolate`
+       for its own map/HUD layering, which would cap this fixed, high z-index
+       control bar inside that isolated layer — letting later sections paint
+       over it despite z-index: 1001. Sibling of .rh-scope, it stacks directly
+       in .radar-hero's (unisolated) context instead. -->
+  <div class="rh-controls">
+    <div class="rh-menu" id="hero-menu">
       <button
-        id="hero-theme-toggle"
-        class="js-theme-toggle rh-theme-toggle"
-        aria-label="Toggle Theme"
+        id="hero-menu-toggle"
+        class="rh-menu-toggle"
+        aria-label={t("nav.menuLabel")}
+        aria-haspopup="true"
+        aria-expanded="false"
+        aria-controls="hero-menu-panel"
       >
-        <span class="material-symbols-outlined theme-icon-moon">dark_mode</span>
-        <span class="material-symbols-outlined theme-icon-sun">light_mode</span>
+        <span class="material-symbols-outlined menu-icon-open">menu</span>
+        <span class="material-symbols-outlined menu-icon-close">close</span>
       </button>
-
-      <a
-        id="lang-toggle"
-        class="rh-lang"
-        href={switchHref}
-        hreflang={target}
-        aria-label={t("nav.switchLabel")}
-      >
-        {localeCode[target]}
-      </a>
+      <nav id="hero-menu-panel" class="rh-menu-panel">
+        <a href="#hero">{t("nav.home")}</a>
+        <a href="#hardware">{t("nav.hardware")}</a>
+        <a href="#software">{t("nav.software")}</a>
+        <a href="#rd">{t("nav.rd")}</a>
+        <a href="#contact">{t("nav.contact")}</a>
+        <a href={blogHref}>{t("nav.blog")}</a>
+      </nav>
     </div>
+
+    <button id="hero-theme-toggle" class="js-theme-toggle rh-theme-toggle" aria-label="Toggle Theme">
+      <span class="material-symbols-outlined theme-icon-moon">dark_mode</span>
+      <span class="material-symbols-outlined theme-icon-sun">light_mode</span>
+    </button>
+
+    <a
+      id="lang-toggle"
+      class="rh-lang"
+      href={switchHref}
+      hreflang={target}
+      aria-label={t("nav.switchLabel")}
+    >
+      {localeCode[target]}
+    </a>
+  </div>
+
+  <div class="rh-scope" aria-label={t("hero.radar.aria")}>
 
     <!-- Retints the base tile's flat grays (land + water share one raster
          color in this tileset) to the scope's navy so land/water read as one
@@ -1301,5 +1428,27 @@ const switchHref = getRelativeLocaleUrl(target, getRouteFromPathname(Astro.url.p
     });
     const footerEl = document.querySelector("footer[id]");
     if (footerEl) spy.observe(footerEl);
+  }
+
+  // Hero nav menu: click to open/close, close on outside click, Escape, or link pick.
+  const heroMenu = document.getElementById("hero-menu");
+  const heroMenuToggle = document.getElementById("hero-menu-toggle");
+  if (heroMenu && heroMenuToggle) {
+    const closeMenu = () => {
+      heroMenu.classList.remove("rh-menu-open");
+      heroMenuToggle.setAttribute("aria-expanded", "false");
+    };
+    heroMenuToggle.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const open = heroMenu.classList.toggle("rh-menu-open");
+      heroMenuToggle.setAttribute("aria-expanded", String(open));
+    });
+    heroMenu.querySelectorAll("a").forEach((link) => link.addEventListener("click", closeMenu));
+    document.addEventListener("click", (e) => {
+      if (!heroMenu.contains(e.target as Node)) closeMenu();
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeMenu();
+    });
   }
 </script>
