@@ -60,9 +60,11 @@ html:not(.dark) .radar-hero {
   height: 100%;
   box-sizing: border-box;
   padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 4vw, 3.25rem);
+  /* Reserve the band the absolutely-positioned brand occupies so the
+     centered content can never slide under the logo on short viewports. */
+  padding-top: calc(clamp(1.5rem, 3vw, 2.25rem) + 2rem);
   display: flex;
   flex-direction: column;
-  justify-content: center;
   overflow-y: auto;
   color: var(--lh-text);
   background: var(--lh-bg);
@@ -90,6 +92,9 @@ html:not(.dark) .radar-hero {
   display: flex;
   flex-direction: column;
   gap: 1.6rem;
+  /* Auto margins center like justify-content: center, but collapse to 0 when
+     content overflows — the top never gets clipped or pushed under the brand. */
+  margin-block: auto;
 }
 
 .rh-eyebrow {
