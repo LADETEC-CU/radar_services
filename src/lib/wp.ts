@@ -61,7 +61,10 @@ export async function getPosts(lang: Lang, perPage: number = WP_CONFIG.perPage):
 export function makeBlogPaths(lang: Lang) {
   return async () => {
     const posts = await getPosts(lang, 100);
-    return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }));
+    return posts.map((post) => ({
+      params: { slug: decodeURIComponent(post.slug) },
+      props: { post },
+    }));
   };
 }
 

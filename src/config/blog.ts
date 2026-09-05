@@ -4,10 +4,9 @@
 export const WP_CONFIG = {
   baseUrl: "https://meteoradares.ladetec.com",
   perPage: 12,
-  // Category slug per locale. Both point at the Spanish category for now;
-  // swap the `en` slug once an English category exists in WordPress.
+  // Category slug per locale.
   categories: {
     es: "huracanes-y-radares",
-    en: "huracanes-y-radares",
+    en: "weather_radars",
   },
 } as const;
