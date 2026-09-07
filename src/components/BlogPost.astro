@@ -1,18 +1,19 @@
 ---
 // Single-post article body, shared by both locale [slug] routes.
+import { render } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveLang, useTranslations } from "../i18n/utils";
-import { featuredImage, decodeEntities, type WpPost } from "../lib/wp";
+import type { BlogEntry } from "../lib/blog";
 
 interface Props {
-  post: WpPost;
+  post: BlogEntry;
 }
 
 const { post } = Astro.props;
 const lang = resolveLang(Astro.currentLocale);
 const t = useTranslations(lang);
 const blogHref = getRelativeLocaleUrl(lang, "blog");
-const image = featuredImage(post);
+const { Content } = await render(post);
 const dateFmt = new Intl.DateTimeFormat(lang, {
   year: "numeric",
   month: "long",
@@ -29,30 +30,22 @@ const dateFmt = new Intl.DateTimeFormat(lang, {
       ← {t("blog.back")}
     </a>
     <time
-      datetime={post.date}
+      datetime={new Date(post.data.date).toISOString()}
       class="mt-10 block font-technical-label text-technical-label tracking-widest text-primary-container uppercase"
     >
-      {dateFmt.format(new Date(post.date))}
+      {dateFmt.format(new Date(post.data.date))}
     </time>
-    <h1
-      class="mt-3 text-headline-md leading-tight text-on-background"
-      set:html={post.title.rendered}
-    />
-    {
-      image && (
-        <img
-          src={image.src}
-          alt={image.alt || decodeEntities(post.title.rendered)}
-          class="mt-8 w-full rounded-lg object-cover"
-        />
-      )
-    }
-    <div class="wp-content mt-8 font-body-lg text-on-surface" set:html={post.content.rendered} />
+    <h1 class="mt-3 text-headline-md leading-tight text-on-background">
+      {post.data.title}
+    </h1>
+    <div class="wp-content mt-8 font-body-lg text-on-surface">
+      <Content />
+    </div>
   </article>
 </main>
 
 <style>
-  /* WordPress block HTML arrives via set:html, outside Astro's scoping —
+  /* Content block HTML arrives from rendered Markdown;
      every selector needs :global(). Colors come from the theme tokens. */
   .wp-content :global(p),
   .wp-content :global(ul),

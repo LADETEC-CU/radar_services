@@ -5,15 +5,25 @@ import { getAbsoluteLocaleUrl } from "astro:i18n";
 import { resolveLang, useTranslations, getRouteFromPathname, localeList } from "../i18n/utils";
 import { defaultLang, ogLocale } from "../i18n/ui";
 
+interface Props {
+  title?: string;
+  description?: string;
+  canonical?: string;
+}
+
 const lang = resolveLang(Astro.currentLocale);
 const t = useTranslations(lang);
 
-const { title = t("site.title"), description = t("site.description") } = Astro.props;
+const {
+  title = t("site.title"),
+  description = t("site.description"),
+  canonical: customCanonical,
+} = Astro.props;
 
 // Locale-agnostic route (no locale prefix), used to build per-locale URLs.
 const route = getRouteFromPathname(Astro.url.pathname, lang);
 const isBlogPost = route.startsWith("blog/") && route !== "blog";
-const canonical = getAbsoluteLocaleUrl(lang, route);
+const canonical = customCanonical ?? getAbsoluteLocaleUrl(lang, route);
 const alternates = localeList.map((l) => ({
   lang: l,
   href: isBlogPost && l !== lang ? getAbsoluteLocaleUrl(l, "blog") : getAbsoluteLocaleUrl(l, route),

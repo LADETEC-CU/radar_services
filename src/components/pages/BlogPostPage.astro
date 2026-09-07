@@ -5,16 +5,17 @@
 import Layout from "../../layouts/Layout.astro";
 import Footer from "../Footer.astro";
 import BlogPost from "../BlogPost.astro";
-import { decodeEntities, type WpPost } from "../../lib/wp";
+import type { BlogEntry } from "../../lib/blog";
 
 interface Props {
-  post: WpPost;
+  post: BlogEntry;
 }
 
 const { post } = Astro.props;
+const canonical = post.data.lang === "es" ? post.data.canonical : undefined;
 ---
 
-<Layout title={`${decodeEntities(post.title.rendered)} | LADETEC`}>
+<Layout title={`${post.data.title} | LADETEC`} canonical={canonical}>
   <BlogPost post={post} />
   <Footer />
 </Layout>
