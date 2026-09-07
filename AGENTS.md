@@ -59,8 +59,9 @@ src/
 │   ├── es.json               # Spanish UI strings (translator-editable)
 │   ├── ui.ts                 # i18n config + types (languages, defaultLang, UIKey, parity guard)
 │   └── utils.ts              # helpers (resolveLang, useTranslations, otherLang, getRouteFromPathname)
-├── lib/wp.ts                 # WordPress REST helpers for the headless blog (build-time only)
-├── config/blog.ts            # WP base URL + per-locale category slugs + perPage
+├── content.config.ts         # Astro content collection configuration for blog
+├── content/blog/             # Markdown blog posts per locale ({es,en}/*.md)
+├── lib/blog.ts               # Blog data layer helpers (getPosts, makeBlogPaths, postImage)
 ├── scripts/                  # client-side TS extracted from big components (hero-radar.ts, site-controls.ts)
 ├── data/
 │   ├── testimonials.en.json  # English testimonial quotes (data-driven)
@@ -70,7 +71,7 @@ public/                       # static assets (favicon, ... , testimonial avatar
 scripts/optimize_images.py    # JPG/PNG → WebP converter (see §8)
 ```
 
-**Locale routes are thin wrappers.** Each EN/ES route pair renders the same shared page component from `src/components/pages/` (`LandingPage`, `BlogIndexPage`, `BlogPostPage`); the route only sets the active locale (see §3), and `[slug]` routes additionally export `getStaticPaths = makeBlogPaths("<lang>")` from `lib/wp.ts`. **Never duplicate page markup into a route file** — add/remove sections in the shared component and both locales pick it up.
+**Locale routes are thin wrappers.** Each EN/ES route pair renders the same shared page component from `src/components/pages/` (`LandingPage`, `BlogIndexPage`, `BlogPostPage`); the route only sets the active locale (see §3), and `[slug]` routes additionally export `getStaticPaths = makeBlogPaths("<lang>")` from `lib/blog.ts`. **Never duplicate page markup into a route file** — add/remove sections in the shared component and both locales pick it up.
 
 **File-size rule:** keep files near ~300 lines. When a component grows past that, extract its CSS to `src/styles/<feature>.css` (imported from frontmatter) and its client script to `src/scripts/<feature>.ts` (imported from the component's `<script>`), as Hero and SiteControls already do.
 
@@ -136,7 +137,7 @@ const testimonialsByLang = { en: enTestimonials, es: esTestimonials };
 const testimonials = testimonialsByLang[lang].map(/* … */);
 ```
 
-Blog posts are also per-locale: `lib/wp.ts` fetches the WordPress category mapped to each locale in `config/blog.ts` (`getPosts(lang)`). Both locales currently point at the same Spanish category — swap the `en` slug in `config/blog.ts` once an English category exists in WordPress.
+Blog posts are also per-locale: `src/lib/blog.ts` loads Markdown entries from `src/content/blog/{es,en}/*.md` (`getPosts(lang)`).
 
 ### Language switcher
 
@@ -184,8 +185,8 @@ All components resolve the locale via `resolveLang(Astro.currentLocale)` and pul
 | `components/Testimonials.astro` | Swiper carousel; quotes from `data/testimonials.<lang>.json` (picked by locale); per-quote dynamic font sizing + initials-fallback avatars.                                                                                                                             |
 | `components/Contact.astro`      | Consultation form. **Client-only stub** — `onsubmit` calls `preventDefault()` + `alert()`; there is no backend/submission. Wire a real handler before relying on it.                                                                                                    |
 | `components/Footer.astro`       | Footer.                                                                                                                                                                                                                                                                 |
-| `components/BlogGrid.astro`     | Blog index card grid; posts from `lib/wp.ts` (`getPosts(lang)`), card image via `postImage()`, empty state when WP is unreachable.                                                                                                                                      |
-| `components/BlogPost.astro`     | Single post: title, date, featured/inline image, WP-rendered HTML body via `set:html`.                                                                                                                                                                                  |
+| `components/BlogGrid.astro`     | Blog index card grid; posts from `lib/blog.ts` (`getPosts(lang)`), card image via `postImage()`, empty state when collection is empty in dev.                                                                                                                           |
+| `components/BlogPost.astro`     | Single post: title, date, inline images, body rendered via `<Content />`.                                                                                                                                                                                               |
 | `components/pages/*.astro`      | Shared page bodies (`LandingPage`, `BlogIndexPage`, `BlogPostPage`) rendered by the thin locale routes (§2).                                                                                                                                                            |
 
 ---
@@ -193,7 +194,7 @@ All components resolve the locale via `resolveLang(Astro.currentLocale)` and pul
 ## 6. Known Stubs & Gotchas
 
 - **Contact form has no backend.** It only shows an alert. Treat as a placeholder.
-- **Blog fetches WordPress at BUILD time only** (static output). A WP/network failure logs a warning and ships an **empty blog** — the build still goes green. Publishing in WP requires a site rebuild to show up. Config: `src/config/blog.ts`.
+- **Blog posts are loaded from local Astro Content Collections** in `src/content/blog/{es,en}/*.md` at build time without network calls. In production builds, empty blog collections or unreviewed posts (`needsReview: true`) cause the build to fail.
 - **The hero calls external APIs at RUNTIME**: `ipwho.is` → `ipapi.co` (IP geolocation, sequential fallback), `api.rainviewer.com` (radar frames), CARTO tile CDN. All degrade gracefully (fallback view / "no data" notice), but a visitor's IP is sent to third parties — keep this in mind for privacy/GDPR review.
 - **Swiper** uses the web-component build (`swiper-container`/`swiper-slide`) registered client-side; it's initialized with `init="false"` then configured in a `<script>`. Keep that init pattern if editing.
 - **Locale route pairs are thin wrappers** over `components/pages/` (§2) — never fork page markup per locale.

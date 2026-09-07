@@ -1,11 +1,11 @@
 ---
 import BlogPostPage from "../../components/pages/BlogPostPage.astro";
-import { makeBlogPaths, type WpPost } from "../../lib/wp";
+import { makeBlogPaths, type BlogEntry } from "../../lib/blog";
 
 export const getStaticPaths = makeBlogPaths("en");
 
 interface Props {
-  post: WpPost;
+  post: BlogEntry;
 }
 
 const { post } = Astro.props;
