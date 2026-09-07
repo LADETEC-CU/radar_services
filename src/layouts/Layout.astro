@@ -22,8 +22,12 @@ const {
 
 // Locale-agnostic route (no locale prefix), used to build per-locale URLs.
 const route = getRouteFromPathname(Astro.url.pathname, lang);
+const isBlogPost = route.startsWith("blog/") && route !== "blog";
 const canonical = customCanonical ?? getAbsoluteLocaleUrl(lang, route);
-const alternates = localeList.map((l) => ({ lang: l, href: getAbsoluteLocaleUrl(l, route) }));
+const alternates = localeList.map((l) => ({
+  lang: l,
+  href: isBlogPost && l !== lang ? getAbsoluteLocaleUrl(l, "blog") : getAbsoluteLocaleUrl(l, route),
+}));
 const ogImage = new URL("/og.webp", Astro.site).href;
 ---
 

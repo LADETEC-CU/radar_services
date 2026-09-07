@@ -78,6 +78,9 @@
   "contact.email.label": "Hash de Comunicación Seguro (Email)",
   "contact.submit": "Iniciar Consulta Técnica",
   "contact.alert": "Consulta técnica iniciada.",
+  "contact.success.title": "Consulta iniciada con éxito",
+  "contact.success.body": "Gracias por comunicarse con nuestro equipo de ingeniería. Su mensaje ha sido procesado de forma segura.",
+  "contact.sendAnother": "Enviar otra consulta",
   "contact.privacy": "Todas las consultas se procesan a través de canales de ingeniería seguros.",
 
   "footer.tagline": "Ingeniería soberana de radares meteorológicos — hardware, software e I+D para la observación atmosférica.",
@@ -97,5 +100,8 @@
   "blog.heading": "Artículos Destacados",
   "blog.empty": "No se encontraron artículos.",
   "blog.readMore": "Leer más",
-  "blog.back": "Volver al blog"
+  "blog.back": "Volver al blog",
+  "blog.preview.eyebrow": "Conocimiento e Ingeniería",
+  "blog.preview.heading": "Últimas Publicaciones del Blog",
+  "blog.preview.viewAll": "Ver todos los artículos"
 }
