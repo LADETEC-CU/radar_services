@@ -1,50 +1,51 @@
 ---
-// Contact.astro
 import { resolveLang, useTranslations } from "../i18n/utils";
 
 const lang = resolveLang(Astro.currentLocale);
 const t = useTranslations(lang);
 ---
 
-<section id="contact" class="py-32 transition-colors duration-300">
+<section id="contact" class="relative py-32">
   <div class="container mx-auto max-w-container-max px-margin-mobile">
     <div
-      class="glass-panel flex flex-col items-center gap-16 border-t-2 border-primary-container p-12 md:flex-row md:p-24"
+      class="glass-panel flex flex-col justify-between gap-12 rounded-xl p-8 md:flex-row md:p-16"
     >
-      <!-- Title Column -->
-      <div class="flex-1 space-y-6 text-center md:text-left">
-        <h2
-          class="font-display-lg text-display-lg-mobile leading-tight text-on-background md:text-headline-md"
-        >
+      <!-- Copy Column -->
+      <div class="max-w-xl">
+        <h2 class="text-headline-md text-on-background">
           {t("contact.title")}
         </h2>
-        <p class="text-body-lg text-on-surface-variant">
+        <p class="mt-6 text-body-lg text-on-surface-variant">
           {t("contact.body")}
         </p>
       </div>
 
       <!-- Form Column -->
       <div class="w-full max-w-md">
-        <form id="contact-form" class="space-y-6" data-alert={t("contact.alert")}>
+        <form id="contact-form" class="space-y-6">
           <!-- Honeypot: off-screen and hidden from assistive tech; humans never
                fill it, so any submission with a value is dropped as spam. -->
           <div class="absolute left-[-9999px]" aria-hidden="true">
             <label for="contact-company">Company</label>
             <input
-              id="contact-company"
               type="text"
+              id="contact-company"
               name="company"
               tabindex="-1"
               autocomplete="off"
             />
           </div>
 
-          <div class="space-y-2">
-            <label class="font-technical-label text-[10px] text-outline uppercase">
+          <div>
+            <label
+              for="service-intent"
+              class="block font-technical-label text-technical-label tracking-widest text-outline uppercase"
+            >
               {t("contact.intent.label")}
             </label>
             <select
-              class="w-full border border-primary/20 bg-background p-4 font-technical-label text-on-background transition-all duration-300 outline-none focus:border-primary-container"
+              id="service-intent"
+              class="mt-2 w-full rounded-md border border-outline-variant bg-surface-container-lowest p-4 text-body-lg text-on-surface focus:border-primary-container focus:outline-hidden"
             >
               <option value="acquisition">{t("contact.intent.acquisition")}</option>
               <option value="consultation">{t("contact.intent.consultation")}</option>
@@ -53,40 +54,84 @@ const t = useTranslations(lang);
             </select>
           </div>
 
-          <div class="space-y-2">
-            <label class="font-technical-label text-[10px] text-outline uppercase">
+          <div>
+            <label
+              for="contact-email"
+              class="block font-technical-label text-technical-label tracking-widest text-outline uppercase"
+            >
               {t("contact.email.label")}
             </label>
             <input
-              class="w-full border border-primary/20 bg-background p-4 font-technical-label text-on-background transition-all duration-300 outline-none placeholder:text-outline/40 focus:border-primary-container"
-              placeholder="terminal@agency.gov"
               type="email"
+              id="contact-email"
               required
+              placeholder="engineer@domain.com"
+              class="mt-2 w-full rounded-md border border-outline-variant bg-surface-container-lowest p-4 text-body-lg text-on-surface focus:border-primary-container focus:outline-hidden"
             />
           </div>
 
           <button
-            class="glow-button w-full bg-primary-container py-5 font-technical-label font-bold tracking-widest text-background uppercase transition-all duration-300"
+            type="submit"
+            class="glow-button w-full cursor-pointer bg-primary-container py-5 font-technical-label font-bold tracking-widest text-background uppercase transition-all duration-300"
           >
             {t("contact.submit")}
           </button>
-
-          <p class="text-center font-technical-label text-[10px] text-outline opacity-60">
+          <p
+            class="text-center font-technical-label text-technical-label tracking-widest text-outline uppercase"
+          >
             {t("contact.privacy")}
           </p>
         </form>
+
+        <!-- Success Panel -->
+        <div
+          id="contact-success"
+          role="status"
+          aria-live="polite"
+          class="hidden space-y-6 rounded-lg border border-primary-container/30 bg-primary-container/10 p-8 text-center"
+        >
+          <div
+            class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary-container/20 text-primary-container"
+          >
+            <span class="material-symbols-outlined text-3xl">check_circle</span>
+          </div>
+          <h3 class="font-headline-md text-xl font-bold text-on-background">
+            {t("contact.success.title")}
+          </h3>
+          <p class="text-body-sm text-on-surface-variant">
+            {t("contact.success.body")}
+          </p>
+          <button
+            id="contact-reset-btn"
+            type="button"
+            class="glow-button w-full cursor-pointer border border-primary-container/40 bg-surface/5 py-4 font-technical-label text-xs font-bold tracking-widest text-primary-container uppercase transition-all duration-300 hover:bg-primary-container/20"
+          >
+            {t("contact.sendAnother")}
+          </button>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
 <script>
-  const form = document.getElementById("contact-form");
+  const form = document.getElementById("contact-form") as HTMLFormElement | null;
+  const successPanel = document.getElementById("contact-success");
+  const resetBtn = document.getElementById("contact-reset-btn");
+
   form?.addEventListener("submit", (event) => {
     event.preventDefault();
     // Honeypot check: a real user never sees or fills #contact-company.
     const honeypot = form.querySelector('input[name="company"]') as HTMLInputElement | null;
     if (honeypot?.value) return; // silently drop likely-bot submissions
-    alert(form.getAttribute("data-alert"));
+
+    form.classList.add("hidden");
+    successPanel?.classList.remove("hidden");
+  });
+
+  resetBtn?.addEventListener("click", () => {
+    form?.reset();
+    successPanel?.classList.add("hidden");
+    form?.classList.remove("hidden");
   });
 </script>

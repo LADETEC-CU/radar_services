@@ -1,59 +1,66 @@
 ---
-// Metrics.astro
 import { resolveLang, useTranslations } from "../i18n/utils";
 
 const lang = resolveLang(Astro.currentLocale);
 const t = useTranslations(lang);
 ---
 
-<section class="bg-surface-container-lowest/30 py-32 transition-colors duration-300">
-  <div class="container mx-auto max-w-container-max px-margin-mobile text-center">
-    <div class="mb-20 inline-block border-b border-primary-container/20 pb-2">
-      <h2
-        class="font-technical-label text-sm font-bold tracking-widest text-primary-container uppercase"
+<section id="metrics" class="relative border-y border-outline-variant/30 py-24">
+  <div class="container mx-auto max-w-container-max px-margin-mobile">
+    <div class="text-center">
+      <p
+        class="font-technical-label text-technical-label tracking-widest text-primary-container uppercase"
       >
         {t("metrics.eyebrow")}
-      </h2>
+      </p>
     </div>
 
-    <div class="mb-24 grid grid-cols-1 gap-12 md:grid-cols-3">
-      <div class="space-y-2">
-        <div class="font-display-lg text-6xl font-bold text-primary-container md:text-8xl">40+</div>
-        <div class="font-technical-label text-outline uppercase">
+    <!-- Stats Grid -->
+    <div class="mt-16 grid gap-gutter md:grid-cols-3">
+      <div class="glass-panel rounded-lg p-8 text-center">
+        <p class="font-display-lg text-headline-md font-bold text-primary-container">40+</p>
+        <p class="mt-2 text-body-lg text-on-surface-variant">
           {t("metrics.years")}
-        </div>
+        </p>
       </div>
-      <div class="space-y-2">
-        <div class="font-display-lg text-6xl font-bold text-primary-container md:text-8xl">
-          150+
-        </div>
-        <div class="font-technical-label text-outline uppercase">
+
+      <div class="glass-panel rounded-lg p-8 text-center">
+        <p class="font-display-lg text-headline-md font-bold text-secondary-container">100%</p>
+        <p class="mt-2 text-body-lg text-on-surface-variant">
           {t("metrics.deployments")}
-        </div>
+        </p>
       </div>
-      <div class="space-y-2">
-        <div class="font-display-lg text-6xl font-bold text-primary-container md:text-8xl">
-          100%
-        </div>
-        <div class="font-technical-label text-outline uppercase">
+
+      <div class="glass-panel rounded-lg p-8 text-center">
+        <p class="font-display-lg text-headline-md font-bold text-primary-container">24/7</p>
+        <p class="mt-2 text-body-lg text-on-surface-variant">
           {t("metrics.custom")}
-        </div>
+        </p>
       </div>
     </div>
 
-    <div class="border-y border-primary/5 py-12">
-      <p class="mb-10 font-technical-label text-xs tracking-widest text-outline uppercase">
+    <!-- Partners / Alliances Logos -->
+    <div class="mt-20">
+      <p
+        class="mb-8 text-center font-technical-label text-technical-label tracking-widest text-outline uppercase"
+      >
         {t("metrics.partners")}
       </p>
       <div
         class="flex flex-wrap items-center justify-center gap-16 opacity-30 grayscale transition-all duration-500 hover:grayscale-0"
       >
-        <span class="font-headline-md font-bold tracking-tighter text-on-background">NOAA.</span>
-        <span class="font-headline-md font-bold tracking-tighter text-on-background">AIRBUS</span>
-        <span class="font-headline-md font-bold tracking-tighter text-on-background">METOFFICE</span
+        <span class="font-headline-md font-bold tracking-tighter text-on-background">INSMET</span>
+        <span class="font-headline-md font-bold tracking-tighter text-on-background"
+          >DEFENSA CIVIL</span
         >
-        <span class="font-headline-md font-bold tracking-tighter text-on-background">RAYTHEON</span>
-        <span class="font-headline-md font-bold tracking-tighter text-on-background">NASA</span>
+        <span class="font-headline-md font-bold tracking-tighter text-on-background">WMO / OMM</span
+        >
+        <span class="font-headline-md font-bold tracking-tighter text-on-background"
+          >MRL-5 NETWORK</span
+        >
+        <span class="font-headline-md font-bold tracking-tighter text-on-background"
+          >LADETEC LABS</span
+        >
       </div>
     </div>
   </div>
