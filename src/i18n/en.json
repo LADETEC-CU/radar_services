@@ -78,6 +78,9 @@
   "contact.email.label": "Secure Communication Hash (Email)",
   "contact.submit": "Initiate Technical Consultation",
   "contact.alert": "Technical consultation initiated.",
+  "contact.success.title": "Consultation Initiated Successfully",
+  "contact.success.body": "Thank you for reaching out to our engineering team. Your inquiry has been transmitted securely.",
+  "contact.sendAnother": "Submit another inquiry",
   "contact.privacy": "All inquiries are processed via secure engineering channels.",
 
   "footer.tagline": "Sovereign weather-radar engineering — hardware, software and R&D for atmospheric observation.",
@@ -97,5 +100,8 @@
   "blog.heading": "Featured Articles",
   "blog.empty": "No articles found.",
   "blog.readMore": "Read more",
-  "blog.back": "Back to blog"
+  "blog.back": "Back to blog",
+  "blog.preview.eyebrow": "Knowledge & Engineering",
+  "blog.preview.heading": "Latest Blog Insights",
+  "blog.preview.viewAll": "View all articles"
 }

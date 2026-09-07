@@ -15,7 +15,10 @@ const t = useTranslations(lang);
 
 const target = otherLang(lang);
 const route = getRouteFromPathname(Astro.url.pathname, lang);
-const switchHref = getRelativeLocaleUrl(target, route);
+const isBlogPost = route.startsWith("blog/") && route !== "blog";
+const switchHref = isBlogPost
+  ? getRelativeLocaleUrl(target, "blog")
+  : getRelativeLocaleUrl(target, route);
 const homeHref = getRelativeLocaleUrl(lang, "");
 const blogHref = getRelativeLocaleUrl(lang, "blog");
 const onBlog = route === "blog" || route.startsWith("blog/");
