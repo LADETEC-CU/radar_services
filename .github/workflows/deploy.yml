@@ -1,0 +1,62 @@
+name: deploy
+
+on:
+  workflow_run:
+    workflows: ["verify"]
+    types: [completed]
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-cloudflare-pages
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  deploy:
+    name: deploy to Cloudflare Pages
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Only deploy off a workflow_run when `verify` actually succeeded.
+    # workflow_dispatch (manual) skips this check.
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    steps:
+      - name: Download dist artifact from verify run
+        if: github.event_name == 'workflow_run'
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      # Manual dispatch has no verify run to pull an artifact from — build it here.
+      - uses: actions/checkout@v4
+        if: github.event_name == 'workflow_dispatch'
+
+      - uses: pnpm/action-setup@v4
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        if: github.event_name == 'workflow_dispatch'
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+        if: github.event_name == 'workflow_dispatch'
+
+      - run: pnpm build
+        if: github.event_name == 'workflow_dispatch'
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name ladetec-radar-services

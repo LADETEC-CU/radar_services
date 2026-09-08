@@ -39,6 +39,15 @@ jobs:
 
       - run: pnpm verify
 
+      # Deploy job (workflow_run) downloads this artifact — no rebuild needed there.
+      - name: Upload dist
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist
+          retention-days: 1
+
   # Non-blocking: also validates EXTERNAL links. External sites time out / rate-limit,
   # so this must NOT gate merges — it surfaces dead outbound URLs as a soft signal.
   # Runs on PRs (advisory) and on the weekly schedule.
