@@ -14,7 +14,7 @@ const blog = defineCollection({
       date: z.coerce.date(),
       lang: z.enum(["es", "en"]),
       excerpt: z.string().optional(),
-      sourceId: z.number(),
+      sourceId: z.coerce.number(),
       sourceUrl: z.string().url(),
       sourceHash: z.string(),
       canonical: z.string().url().optional(),
