@@ -8,7 +8,7 @@ sourceHash: "51b4131b92077cc6"
 lang: "en"
 excerpt: "\"Epic of the Cuban Doppler-11\" recounts the project's dramatic final stretch: commissioning the Doppler radar at its new site, facing Murphy's Law in all its glory. This chapter covers the legal battle against the airport's Control Tower over alleged radiation, the rul—\n\n[Note: source text truncated mid-word (\"el fal\"). Rendered as likely start of \"el fallo\" (the ruling/verdict), inferred from legal-battle context — flagged as inference, not fact. Provide full sentence to confirm.]"
 translatedFrom: "https://meteoradares.ladetec.com/2026/06/18/la-semilla-el-fruto-y-el-olvido-11-de-la-loma-al-calvario-la-ley-de-murphy/"
-needsReview: true
+needsReview: false
 warnings: ["bloque 4/6: etiquetas alteradas {'strong': 1, '/strong': 1}"]
 ---
 

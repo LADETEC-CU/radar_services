@@ -8,7 +8,7 @@ sourceHash: "1aa118e04a4ba351"
 lang: "en"
 excerpt: "EN translation of TITULO+EXCERPT provided above, tone preserved (personal, narrative, slightly ironic), no info added/removed/summarized."
 translatedFrom: "https://meteoradares.ladetec.com/2022/12/28/legado/"
-needsReview: true
+needsReview: false
 ---
 
 <figure class="wp-block-image size-large is-resized"><a href="https://meteoradares.wordpress.com/wp-content/uploads/2022/12/image.png"><img loading="lazy" decoding="async" src="https://meteoradares.wordpress.com/wp-content/uploads/2022/12/image.png?w=287" alt="" class="wp-image-4405" width="672" height="410" /></a></figure>

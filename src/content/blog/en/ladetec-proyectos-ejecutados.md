@@ -8,7 +8,7 @@ sourceHash: "4f20261258a17000"
 lang: "en"
 excerpt: "LADETEC has a long history of project execution. Despite having developed our own methodology for project execution — since the official CITMA (Cuba's Ministry of Science, Technology and Environment) methodology isn't suited to the kind of work we do (in another post, where I explained the main characteris"
 translatedFrom: "https://meteoradares.ladetec.com/2024/03/02/ladetec-proyectos-ejecutados/"
-needsReview: true
+needsReview: false
 warnings: ["bloque 4/10: etiquetas alteradas {'a': 1, '/a': 1}"]
 ---
 

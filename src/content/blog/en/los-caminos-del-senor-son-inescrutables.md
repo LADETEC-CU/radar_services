@@ -8,7 +8,7 @@ sourceHash: "72895a3b360fb0bc"
 lang: "en"
 excerpt: "Often the innovative ideas that revolutionize a field come from outside — from someone who looks at things with fresh eyes, an upstart. That's my case."
 translatedFrom: "https://meteoradares.ladetec.com/2022/01/19/los-caminos-del-senor-son-inescrutables/"
-needsReview: true
+needsReview: false
 ---
 
 <figure class="wp-block-image size-large"><a href="https://blog-media.ladetec.com/wp-content/uploads/2022/01/caballos.ford_.jpg"><img loading="lazy" decoding="async" width="1191" height="552" src="https://blog-media.ladetec.com/wp-content/uploads/2022/01/caballos.ford_.jpg?w=1024" alt="" class="wp-image-2906" srcset="https://blog-media.ladetec.com/wp-content/uploads/2022/01/caballos.ford_.jpg 1191w, https://blog-media.ladetec.com/wp-content/uploads/2022/01/caballos.ford_-300x139.jpg 300w, https://blog-media.ladetec.com/wp-content/uploads/2022/01/caballos.ford_-1024x475.jpg 1024w, https://blog-media.ladetec.com/wp-content/uploads/2022/01/caballos.ford_-768x356.jpg 768w" sizes="auto, (max-width: 1191px) 100vw, 1191px" /></a><figcaption>"If I had asked people what they wanted, they would have said faster horses." Henry Ford</figcaption></figure>

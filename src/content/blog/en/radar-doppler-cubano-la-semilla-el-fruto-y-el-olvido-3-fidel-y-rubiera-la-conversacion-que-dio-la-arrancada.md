@@ -8,7 +8,7 @@ sourceHash: "0d62960de865fa84"
 lang: "en"
 excerpt: "\"Epic of the Cuban Doppler-3\" recounts the decisive moment when Fidel Castro, in the middle of Hurricane Iván, commissioned the building of the first Cuban Doppler radar, hand in hand with Dr. José Rubiera and the engineers of LADETEC (Cuban radar engineering enterprise). This chapter reveals the historic conversation where the purchase of a foreign ext—"
 translatedFrom: "https://meteoradares.ladetec.com/2026/05/02/radar-doppler-cubano-la-semilla-el-fruto-y-el-olvido-3-fidel-y-rubiera-la-conversacion-que-dio-la-arrancada/"
-needsReview: true
+needsReview: false
 ---
 
 <p class="wp-block-paragraph" style="font-size:clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.294), 17px);line-height:1.6">"Cuban Doppler Epic-3" recounts the decisive moment when Fidel Castro, in the middle of Hurricane Iván, ordered the construction of the first Cuban Doppler radar, with Dr. José Rubiera and the engineers of LADETEC (Cuba's weather-radar engineering firm) leading the effort. This chapter reveals the historic conversation in which buying the equipment abroad was turned down in favor of homegrown technology, the enlistment of the Instituto de Meteorología (Cuba's Meteorology Institute) into the Batalla de Ideas (Battle of Ideas, a Cuban state technology-development program), and the technological push that turned a decades-old dream into a state mandate — culminating in the successful development of the Cuban prototype.</p>

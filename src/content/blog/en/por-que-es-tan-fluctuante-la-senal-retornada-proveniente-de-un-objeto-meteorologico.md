@@ -8,7 +8,7 @@ sourceHash: "40618d9d51428363"
 lang: "en"
 excerpt: "The signal on the oscilloscope reveals not only the intensity of a storm, but its internal turbulence. In this article I explain why the fluctuation of weather echoes is not noise, but the key to estimating reflectivity, velocity, and hazard level through Doppler processing, and why"
 translatedFrom: "https://meteoradares.ladetec.com/2026/03/01/por-que-es-tan-fluctuante-la-senal-retornada-proveniente-de-un-objeto-meteorologico/"
-needsReview: true
+needsReview: false
 ---
 
 <figure class="wp-block-image size-large"><a href="https://blog-media.ladetec.com/wp-content/uploads/2026/03/mrl5-orlando-mario-1983.jpg"><img loading="lazy" decoding="async" width="1024" height="495" src="https://blog-media.ladetec.com/wp-content/uploads/2026/03/mrl5-orlando-mario-1983.jpg?w=1024" alt="Orlando (a rookie engineer) getting an explanation from José Mario (the seasoned chief of the MRL-5 radar in Camagüey) about the fluctuating nature of weather echoes, back around 1983. Orlando points at echoes on the PPI while analyzing signals on the A-Scope." class="wp-image-24251" srcset="https://blog-media.ladetec.com/wp-content/uploads/2026/03/mrl5-orlando-mario-1983.jpg 1024w, https://blog-media.ladetec.com/wp-content/uploads/2026/03/mrl5-orlando-mario-1983-300x145.jpg 300w, https://blog-media.ladetec.com/wp-content/uploads/2026/03/mrl5-orlando-mario-1983-768x371.jpg 768w" sizes="auto, (max-width: 1024px) 100vw, 1024px" /></a></figure>

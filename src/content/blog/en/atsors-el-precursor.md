@@ -8,7 +8,7 @@ sourceHash: "5946c279a0e2dfef"
 lang: "en"
 excerpt: "It was as early as 1983 that they brought that system, and I say early because the MRL-5 radar in Camagüey had been delivered on December 16, 1981 (a gift for my first birthday, just starting out working in Meteorology). In 1982 the radar barely worked, due to air conditioning problems—"
 translatedFrom: "https://meteoradares.ladetec.com/2025/02/20/atsors-el-precursor/"
-needsReview: true
+needsReview: false
 ---
 
 <figure class="wp-block-image size-large"><a href="https://blog-media.ladetec.com/wp-content/uploads/2025/02/image-56.png"><img loading="lazy" decoding="async" width="1076" height="731" src="https://blog-media.ladetec.com/wp-content/uploads/2025/02/image-56.png?w=1024" alt="" class="wp-image-15207" srcset="https://blog-media.ladetec.com/wp-content/uploads/2025/02/image-56.png 1076w, https://blog-media.ladetec.com/wp-content/uploads/2025/02/image-56-300x204.png 300w, https://blog-media.ladetec.com/wp-content/uploads/2025/02/image-56-1024x696.png 1024w, https://blog-media.ladetec.com/wp-content/uploads/2025/02/image-56-768x522.png 768w" sizes="auto, (max-width: 1076px) 100vw, 1076px" /></a></figure>

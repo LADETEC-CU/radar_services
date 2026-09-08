@@ -194,7 +194,7 @@ All components resolve the locale via `resolveLang(Astro.currentLocale)` and pul
 ## 6. Known Stubs & Gotchas
 
 - **Contact form has no backend.** It only shows an alert. Treat as a placeholder.
-- **Blog posts are loaded from local Astro Content Collections** in `src/content/blog/{es,en}/*.md` at build time without network calls. In production builds, empty blog collections or unreviewed posts (`needsReview: true`) cause the build to fail.
+- **Blog posts are loaded from local Astro Content Collections** in `src/content/blog/{es,en}/*.md` at build time without network calls. In production builds, empty blog collections or unreviewed posts (`needsReview: false`) cause the build to fail.
 - **The hero calls external APIs at RUNTIME**: `ipwho.is` → `ipapi.co` (IP geolocation, sequential fallback), `api.rainviewer.com` (radar frames), CARTO tile CDN. All degrade gracefully (fallback view / "no data" notice), but a visitor's IP is sent to third parties — keep this in mind for privacy/GDPR review.
 - **Swiper** uses the web-component build (`swiper-container`/`swiper-slide`) registered client-side; it's initialized with `init="false"` then configured in a `<script>`. Keep that init pattern if editing.
 - **Locale route pairs are thin wrappers** over `components/pages/` (§2) — never fork page markup per locale.

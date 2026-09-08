@@ -8,7 +8,7 @@ sourceHash: "d9e8fd2ea4a22101"
 lang: "en"
 excerpt: "\"Epic of the Cuban Doppler-9\" reveals the least visible but most decisive secret of the Doppler radar: the software. This chapter explains how the LADETEC group developed the \"glue\" that binds the hardware parts together, becoming one of the few institutions in the world capable of designing the entire e"
 translatedFrom: "https://meteoradares.ladetec.com/2026/06/04/radar-doppler-cubano-la-semilla-el-fruto-y-el-olvido-9-no-solo-de-hardware-vive-un-radar/"
-needsReview: true
+needsReview: false
 ---
 
 <p class="wp-block-paragraph" style="font-size:clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.294), 17px);line-height:1.6">"The Cuban Doppler Epic–9" reveals the least visible but most decisive secret of the Doppler radar: the software. This chapter explains how the LADETEC group developed the "glue" that binds the hardware parts together, becoming one of the few institutions in the world capable of designing the entire radar software ecosystem: control, acquisition, processing, and display. Meet the epic of VESTA —from VESTA|RDA, created by Marco in the year 2000 (an IoT solution ahead of its time), to the assimilation of the British Cyclops-D processor, the development of VESTA|Cíclope, VESTA|RCP, and the integration of the US NEXRAD's (Next Generation Weather Radar) ORPG (Open Radar Product Generator) software. Discover how the OBS data format and the author's insistence on keeping a single VESTA|Process for both Doppler and non-Doppler radars pushed his programmers —Luisi and Wilfre— to the limits of their abilities.</p>

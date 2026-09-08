@@ -8,7 +8,7 @@ sourceHash: "5ea36ae66d68a695"
 lang: "en"
 excerpt: "«Epic of the Cuban Doppler-4» reveals the strategic reasons, the internal obstacles, and the colossal technological challenge the Cuban team faced upon accepting the mission to build a Doppler radar. This chapter explains why Rubiera (José Rubiera, then head of Cuba's Instituto de Meteorologia) asked for the Doppler, the controversial decision to build it in Cub"
 translatedFrom: "https://meteoradares.ladetec.com/2026/05/03/radar-doppler-cubano-la-semilla-el-fruto-y-el-olvido-4-la-necesidad-los-obstaculos-y-el-desafio-tecnologico/"
-needsReview: true
+needsReview: false
 ---
 
 <p class="wp-block-paragraph">"Cuban Doppler Epic-4" reveals the strategic reasons, the internal obstacles, and the colossal technological challenge the Cuban team faced upon taking on the mission of building a Doppler radar. This chapter explains why Rubiera asked for the Doppler, the controversial decision to build it in Cuba instead of buying it, and the clash with skeptical voices within the Instituto de Meteorología (Cuba's national weather service) itself. Learn about the two major technical challenges —the high-stability local oscillator (STALO) and the real-time signal processor— that turned this project into a bet on technological independence, placing LADETEC among the few institutions in the world capable of designing a complete Doppler weather radar with homegrown technology.</p>

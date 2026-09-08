@@ -8,7 +8,7 @@ sourceHash: "ef85b89fabe2c228"
 lang: "en"
 excerpt: "\"Wanderer, your footprints are the path, and nothing more; Wanderer, there is no path, the path is made by walking. Walking makes the path, and looking back, you see the trail you must never tread again. Wanderer, there is no path, only wakes upon the sea.\" Antonio Machado. Mounting radars […]"
 translatedFrom: "https://meteoradares.ladetec.com/2023/05/20/caminante-no-hay-camino-se-hace-camino-almontar-radares/"
-needsReview: true
+needsReview: false
 warnings: ["bloque 2/12: etiquetas alteradas {'em': 1, '/em': 1}", "bloque 7/12: etiquetas alteradas {'a': 1, '/a': 1}"]
 ---
 

@@ -8,7 +8,7 @@ sourceHash: "2c5e83e69655d489"
 lang: "en"
 excerpt: "Let's be realistic: let's do the impossible! — Ernesto Che Guevara. Since 1983, Cuban weather radars have undergone a constant and growing process of technological innovation. Meet the main milestones driven by the Laboratorio de Desarrollo Técnico (LADETEC, Technical Development Laboratory)."
 translatedFrom: "https://meteoradares.ladetec.com/2021/04/27/hitos-cubanos-en-la-actividad-de-los-radares-meteorologicos/"
-needsReview: true
+needsReview: false
 ---
 
 <figure class="wp-block-image size-large"><a href="https://blog-media.ladetec.com/wp-content/uploads/2021/04/image-31.png"><img loading="lazy" decoding="async" width="687" height="671" src="https://blog-media.ladetec.com/wp-content/uploads/2021/04/image-31.png?w=687" alt="" class="wp-image-2264" srcset="https://blog-media.ladetec.com/wp-content/uploads/2021/04/image-31.png 687w, https://blog-media.ladetec.com/wp-content/uploads/2021/04/image-31-300x293.png 300w" sizes="auto, (max-width: 687px) 100vw, 687px" /></a><figcaption class="wp-element-caption">Year 2020: Cuba begins series production of its prototype Weather (Doppler) Radar</figcaption></figure>

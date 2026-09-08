@@ -8,7 +8,7 @@ sourceHash: "c6c2b9d6eaf3604b"
 lang: "en"
 excerpt: "\"Epic of the Cuban Doppler-10\" recounts the bold decision to move the Doppler radar prototype from Loma de la Mula to the Centro Meteorológico de Camagüey (Camagüey Meteorological Center), a relocation that combined logistical and technical reasons with an ethical commitment to aviation service. This chapter tells how"
 translatedFrom: "https://meteoradares.ladetec.com/2026/06/10/radar-doppler-cubano-la-semilla-el-fruto-y-el-olvido-10-el-regreso-del-hijo-prodigo/"
-needsReview: true
+needsReview: false
 ---
 
 <p class="wp-block-paragraph" style="font-size:clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.392), 18px);line-height:1.6">«Epic of the Cuban Doppler-10» tells the story of the bold decision to move the Doppler radar prototype from Loma de la Mula to the Camagüey Meteorological Center, a relocation that combined logistical and technical reasons with an ethical commitment to serving aviation. This chapter recounts how the LADETEC team, led by Albio and Leonardo-Ichi, dismantled and transported intact the fiberglass radome — over five meters in diameter — in a feat that alone deserved recognition, and how the radar proved its worth during Hurricane Irma by detecting embedded tornadoes in real time. Discover the hidden motives behind the move — from radio-link problems and interference from the TRT unit to the need to improve wind-shear detection for aviation — and the return of the «prodigal son» to his origin.</p>

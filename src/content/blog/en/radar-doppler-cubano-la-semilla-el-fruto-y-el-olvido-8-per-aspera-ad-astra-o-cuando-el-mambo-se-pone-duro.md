@@ -8,7 +8,7 @@ sourceHash: "d26f57be81bb0f23"
 lang: "en"
 excerpt: "\"Epic of the Cuban Doppler-8\" tells the breakneck chapter where Cuban engineers, after the blockade on British analog receivers, managed to dodge every obstacle to complete the Doppler radar. This episode recounts how they got high-quality measurement instruments th—"
 translatedFrom: "https://meteoradares.ladetec.com/2026/05/29/radar-doppler-cubano-la-semilla-el-fruto-y-el-olvido-8-per-aspera-ad-astra-o-cuando-el-mambo-se-pone-duro/"
-needsReview: true
+needsReview: false
 ---
 
 <p class="wp-block-paragraph" style="font-size:clamp(14px, 0.875rem + ((1vw - 3.2px) * 0.294), 17px);line-height:1.6">"Epic of the Cuban Doppler-8" tells the breathless chapter where Cuban engineers, after the blockade of the British analog receivers, managed to dodge every obstacle to complete the Doppler radar. This episode recounts how they got high-quality measurement instruments thanks to a Canadian donation of 110 thousand USD, how they developed an electrical protection system that made the radar immune to lightning strikes after Zeus's attack on four radars, and how Intelcan found a small manufacturer who assembled the analog receivers to the Cuban design. Learn of the final odyssey: Leonardo and the author's trip to test the receivers in 2010, and how the critical components slipped into Cuba in their luggage, dodging the blockade.</p>

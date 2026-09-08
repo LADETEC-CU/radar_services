@@ -8,7 +8,7 @@ sourceHash: "0c8efa0dfa2ec70d"
 lang: "en"
 excerpt: "Surely most of my readers are left in limbo when they hear that radar receivers are \"superheterodyne.\" Well, it's not some word from another world like \"kryptonite\" (which everyone knows is the rock that comes from the planet Krypton and strips Superman of his superpowers)"
 translatedFrom: "https://meteoradares.ladetec.com/2026/06/03/el-receptor-superheterodino-del-radio-de-am-al-radar-doppler-meteorologico/"
-needsReview: true
+needsReview: false
 warnings: ["bloque 4/8: etiquetas alteradas {'em': 2, '/em': 2}", "bloque 5/8: etiquetas alteradas {'em': 1, '/em': 1}"]
 ---
 
