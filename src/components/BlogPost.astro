@@ -3,7 +3,7 @@
 import { render } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveLang, useTranslations } from "../i18n/utils";
-import { postImage, type BlogEntry } from "../lib/blog";
+import type { BlogEntry } from "../lib/blog";
 
 interface Props {
   post: BlogEntry;
@@ -24,8 +24,6 @@ const dateFmt = new Intl.DateTimeFormat(lang, {
 // Calculate estimated reading time (approx. 200 words per minute)
 const words = post.body ? post.body.trim().split(/\s+/).length : 0;
 const readTime = Math.max(1, Math.ceil(words / 200));
-
-const featuredImg = postImage(post);
 ---
 
 <main class="relative z-10 min-h-screen pb-20">
@@ -77,19 +75,6 @@ const featuredImg = postImage(post);
           <p class="mt-6 border-l-2 border-primary-container/80 pl-4 text-lg leading-relaxed text-on-surface-variant italic">
             {post.data.excerpt}
           </p>
-        )
-      }
-
-      <!-- Featured Image Header (if present) -->
-      {
-        featuredImg && (
-          <div class="mt-8 overflow-hidden rounded-xl border border-outline-variant/40 bg-surface-variant/30 shadow-lg">
-            <img
-              src={featuredImg.src}
-              alt={featuredImg.alt || post.data.title}
-              class="max-h-[480px] w-full object-cover"
-            />
-          </div>
         )
       }
     </header>
