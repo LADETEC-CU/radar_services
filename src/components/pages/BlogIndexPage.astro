@@ -13,21 +13,37 @@ const homeHref = getRelativeLocaleUrl(lang, "");
 ---
 
 <Layout title={`${t("blog.title")} | LADETEC`}>
-  <main class="relative z-10 min-h-screen">
-    <div class="container mx-auto max-w-container-max px-margin-mobile py-24">
+  <main class="relative z-10 min-h-screen pb-20">
+    <div class="container mx-auto max-w-container-max px-margin-mobile pt-24">
+      <!-- Top Navigation -->
       <a
         href={homeHref}
-        class="font-technical-label text-technical-label tracking-widest text-outline uppercase transition-colors hover:text-primary-container"
+        class="group inline-flex items-center gap-2 font-technical-label text-technical-label tracking-widest text-outline uppercase transition-colors hover:text-primary-container"
       >
-        ← {t("nav.home")}
+        <span
+          class="material-symbols-outlined text-sm transition-transform group-hover:-translate-x-1"
+          >arrow_back</span
+        >
+        <span>{t("nav.home")}</span>
       </a>
-      <p
-        class="mt-10 font-technical-label text-technical-label tracking-widest text-primary-container uppercase"
-      >
-        {t("blog.eyebrow")}
-      </p>
-      <h1 class="mt-2 text-headline-md text-on-background">{t("blog.heading")}</h1>
-      <div class="mt-12">
+
+      <!-- Blog Header -->
+      <header class="mt-8 mb-14 border-b border-outline-variant/30 pb-10">
+        <div
+          class="inline-flex items-center gap-2 rounded-md border border-outline-variant/20 bg-surface-variant/40 px-3 py-1 font-technical-label text-xs tracking-widest text-primary-container uppercase"
+        >
+          <span class="material-symbols-outlined text-xs">radar</span>
+          <span>{t("blog.eyebrow")}</span>
+        </div>
+        <h1
+          class="mt-4 text-3xl font-extrabold tracking-tight text-on-background sm:text-4xl md:text-5xl"
+        >
+          {t("blog.heading")}
+        </h1>
+      </header>
+
+      <!-- Articles Grid -->
+      <div>
         <BlogGrid />
       </div>
     </div>

@@ -101,6 +101,8 @@
   "blog.empty": "No articles found.",
   "blog.readMore": "Read more",
   "blog.back": "Back to blog",
+  "blog.minRead": "min read",
+  "blog.backToTop": "Back to top",
   "blog.preview.eyebrow": "Knowledge & Engineering",
   "blog.preview.heading": "Latest Blog Insights",
   "blog.preview.viewAll": "View all articles"

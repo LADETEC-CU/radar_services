@@ -101,6 +101,8 @@
   "blog.empty": "No se encontraron artículos.",
   "blog.readMore": "Leer más",
   "blog.back": "Volver al blog",
+  "blog.minRead": "min de lectura",
+  "blog.backToTop": "Volver arriba",
   "blog.preview.eyebrow": "Conocimiento e Ingeniería",
   "blog.preview.heading": "Últimas Publicaciones del Blog",
   "blog.preview.viewAll": "Ver todos los artículos"
