@@ -62,12 +62,14 @@ const attribution =
 
 const BASE_TILES = {
   dark: {
-    base: "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png",
-    labels: "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png",
+    base: "https://{s}.basemaps.cartocdn.com/dark_nolabels/{z}/{x}/{y}{r}.png?api_key=cb1_4iib_1_1dfa4e98cff8bebc4902181e",
+    labels:
+      "https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png?api_key=cb1_4iib_1_1dfa4e98cff8bebc4902181e",
   },
   light: {
-    base: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png",
-    labels: "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png",
+    base: "https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png?api_key=cb1_4iib_1_1dfa4e98cff8bebc4902181e",
+    labels:
+      "https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png?api_key=cb1_4iib_1_1dfa4e98cff8bebc4902181e",
   },
 };
 
